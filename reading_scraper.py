@@ -18,7 +18,6 @@ USER_ID = sys.argv[2]
 word_count = 0
 reading = ''
 title = ''
-# author = ''
 domain = ''
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'}
 # response = requests.get(f'{BASE_URL}')
@@ -78,7 +77,7 @@ get_word_count()
 
 db = mysql.connect(
     host= os.getenv('HOST'),
-    user= 'root',
+    user= os.getenv('USER'),
     passwd= os.getenv('DBPASSWORD'),
     database= os.getenv('DB'),
     auth_plugin= os.getenv('AUTHPLUGIN')

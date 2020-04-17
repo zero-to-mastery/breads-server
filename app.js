@@ -12,13 +12,26 @@ let express = require('express'),
     subscriptions = require('./controllers/subscriptions'),
     notifications = require('./controllers/notifications');
 
-const PORT = process.event.PORT || 8080;
+const PORT = process.env.PORT || 8080;
+
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    console.log(req.method);
+    // intercept OPTIONS method
+    if ('OPTIONS' == req.method) res.send(200);
+    else next();
+});
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
-app.use(cors());
+// app.use(cors());
+// app.options('*', cors())
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+
+
 
 app.use('/api/auth/', authRoutes);
 // /api/users/:username (read)
