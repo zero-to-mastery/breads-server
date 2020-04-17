@@ -1,14 +1,3 @@
-// readings/util
-    // pythonscraper
-// routes
-    // users
-// tests
-    // articles/readings
-    // auth
-    // users
-    // python
-    // errorhandler?
-
 require('dotenv').config();
 let express = require('express'),
     app = express(),
@@ -23,7 +12,7 @@ let express = require('express'),
     subscriptions = require('./controllers/subscriptions'),
     notifications = require('./controllers/notifications');
 
-const PORT = 8080;
+const PORT = process.event.PORT || 8080;
 
 app.set('views', './views');
 app.set('view engine', 'ejs');

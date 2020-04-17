@@ -2,10 +2,10 @@ require('dotenv').config();
 let mysql = require('mysql');
 
 let connection = mysql.createConnection({
-    host: process.env.HOST,
-    user: 'root',
-    password: process.env.DBPASSWORD,
-    database: process.env.DB
+    host: process.env.CLEARDB_MYSQL_URI || process.env.HOST,
+    user: process.env.USER || 'root',
+    password: process.env.DBPASSWORD || 'Basebal6',
+    database: process.env.DB || 'articly'
 });
 
 module.exports.connection = connection;
