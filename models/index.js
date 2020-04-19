@@ -48,3 +48,6 @@ module.exports.connection = connection;
 //     FOREIGN KEY(publisher_id) REFERENCES users(id),
 //     PRIMARY KEY(subscriber_id, publisher_id)
 // );
+
+// ALTER TABLE users ADD FULLTEXT (first_name, last_name, username);
+// ALTER TABLE subscriptions ADD COLUMN isNew INT DEFAULT 1 AFTER created_at;
