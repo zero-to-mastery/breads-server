@@ -5,7 +5,7 @@ let express = require('express'),
     errorHandler = require('./controllers/error').errorHandler,
     authRoutes = require('./routes/auth'),
     readingRoutes = require('./routes/readings'),
-    cors = require('cors'),
+    // cors = require('cors'),
     auth = require('./middleware/auth'),
     readings = require('./controllers/readings'),
     users = require('./controllers/users'),
@@ -18,7 +18,6 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    console.log(req.method);
     // intercept OPTIONS method
     if ('OPTIONS' == req.method) res.send(200);
     else next();
