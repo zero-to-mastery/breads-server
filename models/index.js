@@ -2,13 +2,15 @@ require('dotenv').config();
 let mysql = require('mysql');
 
 let localSetup = {
+    connectionLimit: 25,
     host: process.env.HOST || 'localhost',
     user: process.env.USERNAME || 'root',
     password: process.env.DBPASSWORD || 'Basebal6$',
     database: process.env.DB || 'articly'
 }
 
-let connection = mysql.createConnection(localSetup);
+// let connection = mysql.createConnection(localSetup);
+let connection = mysql.createPool(localSetup);
 // process.env.CLEARDB_DATABASE_URL
 
 
