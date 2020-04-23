@@ -26,15 +26,15 @@ exports.findByUsername = (username) => {
     return user;
 }
 
-exports.update = (updated, identifier) => {
-    let user = new Promise((resolve, reject) => {
-        db.connection.query('UPDATE users SET ? WHERE ?', [updated, identifier], function(err, results) {
-            if (err) reject(err);
-            else resolve(results);
-        });
-    });
-    return user;
-}
+// exports.update = (updated, identifier) => {
+//     let user = new Promise((resolve, reject) => {
+//         db.connection.query('UPDATE users SET ? WHERE ?', [updated, identifier], function(err, results) {
+//             if (err) reject(err);
+//             else resolve(results);
+//         });
+//     });
+//     return user;
+// }
 
 exports.delete = username => {
     let user = new Promise((resolve, reject) => {
@@ -47,7 +47,7 @@ exports.delete = username => {
 }
 
 exports.findAll = () => {
-    let users = new Promise(function (resolve, reject) {
+    let users = new Promise((resolve, reject) => {
         db.connection.query('SELECT id, first_name, last_name, username, image FROM users ORDER BY id DESC', function(err, results) {
             if (err) reject(err);
             else resolve(results);
@@ -57,7 +57,7 @@ exports.findAll = () => {
 }
 
 exports.findBySubId = sub_id => {
-    let pubs = new Promise(function (resolve, reject) {
+    let pubs = new Promise((resolve, reject) => {
         db.connection.query('SELECT id, first_name, last_name, username, image FROM subscriptions LEFT JOIN users ON publisher_id = users.id WHERE subscriber_id = ? ORDER BY id DESC', sub_id, function(err, results) {
             if (err) reject(err);
             else resolve(results);
@@ -67,13 +67,23 @@ exports.findBySubId = sub_id => {
 }
 
 exports.findBySearch = string => {
-    let result = new Promise(function (resolve, reject) {
+    let result = new Promise((resolve, reject) => {
         db.connection.query('SELECT id, first_name, last_name, username, image, MATCH (first_name, last_name, username) AGAINST (?) as score FROM users WHERE MATCH (first_name, last_name, username) AGAINST (?) > 0 ORDER BY score DESC', [string, string], function(err, results) {
             if (err) reject(err);
             else resolve(results);
         });
     });
     return result;
+}
+
+exports.findByIdAndUpdate = (id, image, username) => {
+    let updatedUser = new Promise((resolve, reject) => {
+        db.connection.query('UPDATE users SET image = ?, username = ? WHERE id = ?', [image, username, id], function(err, results) {
+            if (err) reject(err);
+            else resolve(results);
+        });
+    });
+    return updatedUser;
 }
 
 // fix next
