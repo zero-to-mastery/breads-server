@@ -55,7 +55,7 @@ exports.findAll = () => {
     return users;
 }
 
-exports.findBySubId = sub_id => {
+exports.findSubscriptionsById = sub_id => {
     let pubs = new Promise((resolve, reject) => {
         db.connection.query('SELECT id, first_name, last_name, username, image FROM subscriptions LEFT JOIN users ON publisher_id = users.id WHERE subscriber_id = ? ORDER BY id DESC', sub_id, function(err, results) {
             if (err) reject(err);

@@ -11,20 +11,20 @@ exports.findAllUsers = async (req, res, next) => {
     }
 }
 
-exports.findPubs = async (req, res, next) => {
+exports.findSubscriptions = async (req, res, next) => {
     try {
-        let pubs = await users.findBySubId(req.params.id);
-        return res.status(200).json(pubs);
+        let subscriptions = await users.findSubscriptionsById(req.params.id);
+        return res.status(200).json(subscriptions);
     }
     catch (err) {
-        console.log('findPubs - controllers/users');
+        console.log('findSubscriptions - controllers/users');
         return next(err);
     }
 }
 
-exports.search = async (req, res, next) => {
+exports.searchUsers = async (req, res, next) => {
     try {
-        let results = await users.findBySearch(req.params.search);
+        let results = await users.findBySearch(req.query.users);
         return res.status(200).json(results);
     }
     catch (err) {

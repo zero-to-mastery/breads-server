@@ -1,8 +1,11 @@
 let express = require('express'),
     router = express.Router({ mergeParams: true }),
+    subscriptions = require('../controllers/subscriptions'),
     readings = require('../controllers/readings');
 
-router.post('/', readings.createReading);
-router.delete('/:reading_id', readings.deleteReading);
+router.get('', readings.findAllReadings);
+router.get('/:id', readings.findUserReadings);
+router.get('/:id/subscriptions', subscriptions.findSubscriptionReadings);
+router.get('/:id/summary', readings.summarizeReading);
 
 module.exports = router;
