@@ -35,8 +35,13 @@ exports.search = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        let updatedUser = await users.findByIdAndUpdate(req.params.id, req.body.image, req.body.username);
-        return res.status(200).json(updatedUser);
+        let updated = await users.findByIdAndUpdate(req.params.id, req.body.image, req.body.username);
+        let updatedUser = await users.findById(req.params.id);
+        return res.status(200).json({
+            id: updatedUser[0].id,
+            username: updatedUser[0].username,
+            image: updatedUser[0].image
+        });
     }
     catch (err) {
         console.log('updateUser - controllers/users');

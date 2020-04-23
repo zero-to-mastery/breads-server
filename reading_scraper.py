@@ -76,10 +76,10 @@ get_word_count()
 ###############connect to db###############
 
 db = mysql.connect(
-    host= os.getenv('HOST'),
-    user= os.getenv('USER'),
-    passwd= os.getenv('DBPASSWORD'),
-    database= os.getenv('DB'),
+    host= os.getenv('HOST') or 'localhost',
+    user= os.getenv('USERNAME') or 'root',
+    passwd= os.getenv('DBPASSWORD') or 'Basebal6$',
+    database= os.getenv('DB') or 'articly',
     auth_plugin= os.getenv('AUTHPLUGIN')
 )
 

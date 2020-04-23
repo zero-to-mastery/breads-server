@@ -1,7 +1,6 @@
 let db = require('../models'),
     bcrypt = require('bcrypt');
 
-// UPDATE, DELETE
 exports.create = async (user) => {  
     let salt = bcrypt.genSaltSync(10),
         hash = bcrypt.hashSync(user.password, salt);
@@ -16,7 +15,7 @@ exports.create = async (user) => {
     return newUser;
 }
 
-exports.findByUsername = (username) => {
+exports.findByUsername = username => {
     let user = new Promise((resolve, reject) => {
         db.connection.query('SELECT * FROM users WHERE username = ?', username, function(err, results) {
             if (err) reject(err);
@@ -26,15 +25,15 @@ exports.findByUsername = (username) => {
     return user;
 }
 
-// exports.update = (updated, identifier) => {
-//     let user = new Promise((resolve, reject) => {
-//         db.connection.query('UPDATE users SET ? WHERE ?', [updated, identifier], function(err, results) {
-//             if (err) reject(err);
-//             else resolve(results);
-//         });
-//     });
-//     return user;
-// }
+exports.findById = id => {
+    let user = new Promise((resolve, reject) => {
+        db.connection.query('SELECT id, username, image FROM users WHERE id = ?', id, function(err, results) {
+            if (err) reject(err);
+            else resolve(results);  
+        });
+    });
+    return user;
+}
 
 exports.delete = username => {
     let user = new Promise((resolve, reject) => {
@@ -85,14 +84,6 @@ exports.findByIdAndUpdate = (id, image, username) => {
     });
     return updatedUser;
 }
-
-// fix next
-// exports.delete = function(username, password) {
-//     db.connection.query('DELETE FROM users WHERE username = ? AND password = ?', [username, password], function(err, results) {
-//         if (err) throw err;
-//         else return this.values;
-//     });
-// }
 
 // SELECT username, MATCH (first_name, last_name, username) AGAINST ('User') as score FROM users WHERE MATCH (first_name, last_name, username) AGAINST ('User') > 0 ORDER BY score DESC;
 // SELECT username, MATCH (first_name, last_name, username) AGAINST ('user') as score FROM users;
