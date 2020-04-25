@@ -30,7 +30,11 @@ exports.summarizeReading = async (req, res, next) => {
 exports.findAllReadings = async (req, res, next) => {
     try {
         let allReadings = await readings.findAll();
-        return res.status(200).json(allReadings);
+        let allWebsites = await readings.findWebsites();
+        return res.status(200).json({
+            data: allReadings,
+            websites: allWebsites
+        });
     }
     catch (err) {
         console.log('findAllreadings - controllers/readings');
@@ -41,7 +45,11 @@ exports.findAllReadings = async (req, res, next) => {
 exports.findUserReadings = async (req, res, next) => {
     try {
         let userReadings = await readings.findByUserId(req.params.id);
-        return res.status(200).json(userReadings);
+        let userWebsites = await readings.findWebsitesByUserId(req.params.id);
+        return res.status(200).json({
+            data: userReadings,
+            websites: userWebsites
+        });
     }
     catch (err) {
         console.log('findUserreadings - controllers/readings');
