@@ -4,7 +4,9 @@ let express = require('express'),
     users = require('../controllers/users'),
     notifications = require('../controllers/notifications'),
     subscriptions = require('../controllers/subscriptions'),
-    readings = require('../controllers/readings');
+    readings = require('../controllers/readings'),
+    sendEmail = require('../controllers/auth').sendPasswordResetEmail,
+    receiveNewPassword = require('../controllers/auth').receiveNewPassword;
 
 
 router.get('', users.findAllUsers);
@@ -26,5 +28,9 @@ router.put('/:id/notifications', notifications.removeNotification);
 
 // SEARCH
 router.get('/search', users.searchUsers);
+
+//RESET PASSWORD
+router.post('/reset', sendEmail);
+router.post('/:username/reset/:token', receiveNewPassword);
 
 module.exports = router;

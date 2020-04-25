@@ -1,7 +1,12 @@
 let User = require('../models/user').User,
     jwt = require('jsonwebtoken'),
-    comparePassword = require('../helpers/auth').comparePassword;
-    users = require('../helpers/users');
+    comparePassword = require('../helpers/auth').comparePassword,
+    users = require('../helpers/users'),
+    transporter = require('../helpers/auth').transporter,
+    getPasswordResetURL = require('../helpers/auth').getPasswordResetURL,
+    resetPasswordTemplate = require('../helpers/auth').resetPasswordTemplate,
+    usePasswordHashToMakeToken = require('../helpers/auth').usePasswordHashToMakeToken;
+
 
 exports.signup = async function(req, res, next) {
     try {
@@ -37,7 +42,10 @@ exports.signin = async function(req, res, next) {
     try {
         let username = req.body.username,
             password = req.body.password;
-        let user = await users.findByUsername(username)
+        console.log(username);
+        console.log(password);
+        let user = await users.findByUsername(username);
+        console.log('password' + user);
         comparePassword(password, user[0].password, function(err, isMatch) {
             if (isMatch) {
                 let token = jwt.sign({ 
@@ -65,4 +73,65 @@ exports.signin = async function(req, res, next) {
             message: 'Invalid Username/Password.'
         });
     }
+}
+
+//PASSWORD RESET
+
+exports.sendPasswordResetEmail = async (req, res, next) => {
+    const { email } = req.body;
+    let user;
+    try {
+        user = await users.findByEmail(email);
+    } catch (err) {
+        return next({
+            status: 404,
+            message: 'No user with that email'
+        });
+    }
+    const token = usePasswordHashToMakeToken(user);
+    const url = getPasswordResetURL(user, token);
+    const emailTemplate = resetPasswordTemplate(user, url);
+  
+    const sendEmail = () => {
+        transporter.sendMail(emailTemplate, (err, info) => {
+            if (err) {
+                return next({
+                    status: 500,
+                    message: 'Error sending email'
+                });
+            }
+            // console.log(`** Email sent **`, info.response)
+            return res.status(202).json('Reset password email sent')
+        })
+    }
+    sendEmail();
+}
+
+exports.receiveNewPassword = (req, res, next) => {
+    const { username, token } = req.params;
+    const { password } = req.body;
+  
+    users.findByUsername(username)
+        .then(user => {
+            const secret = user[0].password + '-' + user[0].createdAt;
+            const payload = jwt.decode(token, secret);
+            console.log(payload);
+            if (payload.id === user[0].id) {
+                bcrypt.genSalt(10, function(err, salt) {
+                    if (err) return;
+                    bcrypt.hash(password, salt, function(err, hash) {
+                        if (err) return;
+                        users.findByIdAndUpdate({ password: hash }, user[0].id)
+                            .then(() => res.status(202).json('Password changed accepted'))
+                            .catch(err => next(res.status(500).json(err)));
+                    })
+                })
+            }
+        })
+        .catch(() => {
+            return next({
+                status: 404,
+                message: 'Invalid user'
+            });
+        });
 }

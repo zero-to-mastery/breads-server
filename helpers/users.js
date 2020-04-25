@@ -35,6 +35,16 @@ exports.findById = id => {
     return user;
 }
 
+exports.findByEmail = email => {
+    let user = new Promise((resolve, reject) => {
+        db.connection.query('SELECT * FROM users WHERE email = ?', email, function(err, results) {
+            if (err) reject(err);
+            else resolve(results);  
+        });
+    });
+    return user;
+}
+
 exports.delete = username => {
     let user = new Promise((resolve, reject) => {
         db.connection.query('DELETE FROM users WHERE username = ?', username, function(err, results) {
@@ -78,6 +88,16 @@ exports.findBySearch = string => {
 exports.findByIdAndUpdate = (id, image, username) => {
     let updatedUser = new Promise((resolve, reject) => {
         db.connection.query('UPDATE users SET image = ?, username = ? WHERE id = ?', [image, username, id], function(err, results) {
+            if (err) reject(err);
+            else resolve(results);
+        });
+    });
+    return updatedUser;
+}
+
+exports.findByIdAndUpdatePassword = (password, id) => {
+    let updatedUser = new Promise((resolve, reject) => {
+        db.connection.query('UPDATE users SET password = ? WHERE id = ?', [password, id], function(err, results) {
             if (err) reject(err);
             else resolve(results);
         });
