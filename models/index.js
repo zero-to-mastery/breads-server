@@ -51,3 +51,4 @@ module.exports.connection = connection;
 
 // ALTER TABLE users ADD FULLTEXT (first_name, last_name, username);
 // ALTER TABLE subscriptions ADD COLUMN isNew INT DEFAULT 1 AFTER created_at;
+// ALTER TABLE readings DROP INDEX url;
