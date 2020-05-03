@@ -6,27 +6,42 @@ let User = require('../models/user').User,
     transporter = require('../helpers/auth').transporter,
     getPasswordResetURL = require('../helpers/auth').getPasswordResetURL,
     resetPasswordTemplate = require('../helpers/auth').resetPasswordTemplate,
-    usePasswordHashToMakeToken = require('../helpers/auth').usePasswordHashToMakeToken;
-
+    usePasswordHashToMakeToken = require('../helpers/auth').usePasswordHashToMakeToken,
+    cloud = require('../helpers/image'),
+    dataUri = require('../middleware/image').dataUri;
 
 exports.signup = async function(req, res, next) {
     try {
-        let newUser = new User(req.body.first_name, req.body.last_name, req.body.username, req.body.email, req.body.password, req.body.image);
-        let userId = await users.create(newUser);
-        let token = jwt.sign(
-            { 
-                id: userId.insertId,
-                username: newUser.username,
-                image: newUser.image
-            }, 
-            process.env.SECRET_KEY
-        );
-        return res.status(200).json({ 
-            id: userId.insertId,
-            username: newUser.username,
-            image: newUser.image,
-            token
-        });
+        if (req.file) {
+            const file = dataUri(req).content;
+            cloud.uploads(file)
+            .then(async (result) => {
+                req.body.image = result.url;
+
+                let newUser = new User(req.body.first_name, req.body.last_name, req.body.username, req.body.email, req.body.password, req.body.image);
+                let userId = await users.create(newUser);
+                let token = jwt.sign(
+                    { 
+                        id: userId.insertId,
+                        username: newUser.username,
+                        image: newUser.image
+                    }, 
+                    process.env.SECRET_KEY
+                );
+                return res.status(200).json({ 
+                    id: userId.insertId,
+                    username: newUser.username,
+                    image: newUser.image,
+                    token
+                });
+            })
+            .catch(err => {
+                return next({
+                    status: 400,
+                    message: err.message
+                });
+            })
+        }
     }
     catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {

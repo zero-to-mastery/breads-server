@@ -1,8 +1,10 @@
 let express = require('express'),
     router = express.Router(),
-    controllers = require('../controllers/auth');
+    auth = require('../controllers/auth'),
+    upload = require('../middleware/image').upload,
+    cloudinaryConfig = require('../helpers/image').cloudinaryConfig;
 
-router.post('/signup', controllers.signup);
-router.post('/signin', controllers.signin);
+router.post('/signup', upload.single('image'), cloudinaryConfig, auth.signup);
+router.post('/signin', auth.signin);
 
 module.exports = router;
