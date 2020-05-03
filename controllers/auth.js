@@ -38,7 +38,7 @@ exports.signup = async function(req, res, next) {
             .catch(err => {
                 return next({
                     status: 400,
-                    message: err.message
+                    message: 'There was an error uploading your image'
                 });
             })
         }

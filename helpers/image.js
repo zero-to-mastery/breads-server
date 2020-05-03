@@ -14,9 +14,7 @@ exports.uploads = file => {
     let imageUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(file, {resource_type: 'auto'}, function(err, result) {
             if (err) reject(err);
-            else {
-                resolve({url: result.url, id: result.public_id})
-            }
+            else resolve({url: result.url, id: result.public_id})
         });
     });
     return imageUpload;
