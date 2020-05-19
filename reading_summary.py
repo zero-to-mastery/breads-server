@@ -3,36 +3,38 @@ from bs4 import BeautifulSoup
 import sys
 from dotenv import load_dotenv
 from gensim.summarization import summarize
+from fake_useragent import UserAgent
+from fake_useragent import FakeUserAgentError
+from goose3 import Goose
 
 load_dotenv()
 
-####################scraping code####################
-# print(sys.argv[1])
 BASE_URL = sys.argv[1]
-# BASE_URL = 'https://www.artofmanliness.com/articles/sunday-firesides-build-your-life-upon-multiple-pillars-of-support/'
-reading = ''
+body = ''
 summary = ''
-headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36'}
-# response = requests.get(f'{BASE_URL}')
-response = requests.get(BASE_URL, headers=headers)
-soup = BeautifulSoup(response.text, 'html.parser')
+
+def useragent_generator():
+    fallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
+    try:
+        ua = UserAgent(fallback=fallback)
+    except FakeUserAgentError:
+        pass
+    headers = str(ua.random)
+    return headers
 
 def get_reading():
-    paragraphs = soup.find_all('p')
-    all_words = [tag.get_text().strip() for tag in paragraphs]
-    # Filter out sentences that contain newline characters '\n' or don't contain periods.
-    sentence_list = [sentence for sentence in all_words if not '\n' in sentence]
-    sentence_list = [sentence for sentence in sentence_list if '.' in sentence]
-    # Combine list items into string.
-    global reading
-    reading = ' '.join(sentence_list)
-    # print(reading)
+    global body
+    try:
+        g = Goose({'browser_user_agent': useragent_generator()})
+        reading = g.extract(url=BASE_URL)
+        body = reading.cleaned_text
+    except:
+        body = 'None'
 
 def get_summary():
     global summary
-    summary = summarize(reading, ratio=0.3)
+    summary = summarize(body, word_count=500)
     print(summary)
-    # print(len(summary))
 
 get_reading()
 get_summary()
