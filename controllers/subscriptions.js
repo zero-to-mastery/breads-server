@@ -22,8 +22,12 @@ exports.createSubscription = async (req, res, next) => {
 
 exports.findSubscriptionReadings = async (req, res, next) => {
     try {
-        let subscriptionReadings = await Subscription.findSubReadings(req.params.id);
-        return res.status(200).json(subscriptionReadings);
+        let subReadings = await Subscription.findSubReadings(req.params.id);
+        let subWebsites = await Subscription.findSubWebsites(req.params.id);
+        return res.status(200).json({
+            data: subReadings,
+            websites: subWebsites
+        });
     }
     catch (err) {
         console.log('findSubscriptionReadings - controllers/subscriptions');

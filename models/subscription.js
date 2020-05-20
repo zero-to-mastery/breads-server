@@ -26,6 +26,16 @@ class Subscription {
         return subscriptionReadings;
     }
 
+    static findSubWebsites(sub_id) {
+        let subscriptionReadings = new Promise((resolve, reject) => {
+            db.connection.query('SELECT domain FROM subscriptions INNER JOIN readings ON publisher_id = readings.user_id INNER JOIN users ON readings.user_id = users.id WHERE subscriber_id = ? GROUP BY domain ORDER BY COUNT(domain) DESC', sub_id, function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return subscriptionReadings;
+    }
+
     static findBySubId(sub_id) {
         let subscription = new Promise((resolve, reject) => {
             db.connection.query('SELECT * FROM subscriptions WHERE subscriber_id = ?', sub_id, function(err, results) {
