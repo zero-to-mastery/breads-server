@@ -1,11 +1,10 @@
-let subscriptions = require('../helpers/subscriptions'),
-    Subscription = require('../models/subscription').Subscription;
+let Subscription = require('../models/subscription');
 
 exports.createSubscription = async (req, res, next) => {
     try {
         if (req.params.id !== req.body.sub_id) {
             let newSubscription = new Subscription(req.params.id, req.body.sub_id);
-            let subscription = await subscriptions.create(newSubscription);
+            let subscription = await Subscription.create(newSubscription);
             return res.status(200).json(subscription);
         }
     }
@@ -23,7 +22,7 @@ exports.createSubscription = async (req, res, next) => {
 
 exports.findSubscriptionReadings = async (req, res, next) => {
     try {
-        let subscriptionReadings = await subscriptions.findSubReadings(req.params.id);
+        let subscriptionReadings = await Subscription.findSubReadings(req.params.id);
         return res.status(200).json(subscriptionReadings);
     }
     catch (err) {
@@ -34,7 +33,7 @@ exports.findSubscriptionReadings = async (req, res, next) => {
 
 exports.deleteSubscription = async (req, res, next) => {
     try {
-        let deletedSubscription = await subscriptions.delete(Number(req.params.user_id), Number(req.params.sub_id));
+        let deletedSubscription = await Subscription.delete(Number(req.params.user_id), Number(req.params.sub_id));
         return res.status(200).json(deletedSubscription);
     }
     catch (err) {

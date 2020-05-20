@@ -1,8 +1,8 @@
-let users = require('../helpers/users');
+let User = require('../models/user');
 
 exports.findAllUsers = async (req, res, next) => {
     try {
-        let allUsers = await users.findAll();
+        let allUsers = await User.findAll();
         return res.status(200).json(allUsers);
     }
     catch (err) {
@@ -13,7 +13,7 @@ exports.findAllUsers = async (req, res, next) => {
 
 exports.findSubscriptions = async (req, res, next) => {
     try {
-        let subscriptions = await users.findSubscriptionsById(req.params.id);
+        let subscriptions = await User.findSubscriptionsById(req.params.id);
         return res.status(200).json(subscriptions);
     }
     catch (err) {
@@ -24,7 +24,7 @@ exports.findSubscriptions = async (req, res, next) => {
 
 exports.searchUsers = async (req, res, next) => {
     try {
-        let results = await users.findBySearch(req.query.users);
+        let results = await User.findBySearch(req.query.users);
         return res.status(200).json(results);
     }
     catch (err) {
@@ -35,8 +35,8 @@ exports.searchUsers = async (req, res, next) => {
 
 exports.updateUser = async (req, res, next) => {
     try {
-        let updated = await users.findByIdAndUpdate(req.params.id, req.body.image, req.body.username);
-        let updatedUser = await users.findById(req.params.id);
+        let updated = await User.findByIdAndUpdate(req.params.id, req.body.image, req.body.username);
+        let updatedUser = await User.findById(req.params.id);
         return res.status(200).json({
             id: updatedUser[0].id,
             username: updatedUser[0].username,

@@ -9,12 +9,6 @@ exports.comparePassword = function(candidatePassword, password, next) {
     });
 }
 
-// {
-//     password: passwordHash,
-//     id: id,
-//     createdAt
-// }
-
 exports.usePasswordHashToMakeToken = user => {
     const { id, password, created_at } = user[0];
     const secret = password + '-' + created_at;

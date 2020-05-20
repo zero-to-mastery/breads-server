@@ -1,8 +1,7 @@
-let User = require('../models/user').User,
-    jwt = require('jsonwebtoken'),
+let jwt = require('jsonwebtoken'),
     bcrypt = require('bcrypt'),
     comparePassword = require('../helpers/auth').comparePassword,
-    users = require('../helpers/users'),
+    User = require('../models/user'),
     transporter = require('../helpers/auth').transporter,
     getPasswordResetURL = require('../helpers/auth').getPasswordResetURL,
     resetPasswordTemplate = require('../helpers/auth').resetPasswordTemplate,
@@ -19,7 +18,7 @@ exports.signup = async function(req, res, next) {
                 req.body.image = result.url;
 
                 let newUser = new User(req.body.first_name, req.body.last_name, req.body.username, req.body.email, req.body.password, req.body.image);
-                let userId = await users.create(newUser);
+                let userId = await User.create(newUser);
                 let token = jwt.sign(
                     { 
                         id: userId.insertId,
@@ -55,7 +54,7 @@ exports.signin = async function(req, res, next) {
     try {
         let username = req.body.username,
             password = req.body.password;
-        let user = await users.findByUsername(username);
+        let user = await User.findByUsername(username);
         comparePassword(password, user[0].password, function(err, isMatch) {
             if (isMatch) {
                 let token = jwt.sign({ 
@@ -91,7 +90,7 @@ exports.sendPasswordResetEmail = async (req, res, next) => {
     const { email } = req.body;
     let user;
     try {
-        user = await users.findByEmail(email);
+        user = await User.findByEmail(email);
     } catch (err) {
         return next({
             status: 404,
@@ -121,7 +120,7 @@ exports.receiveNewPassword = (req, res, next) => {
     const { username, token } = req.params;
     const { password } = req.body;
 
-    users.findByUsername(username)
+    User.findByUsername(username)
         .then(user => {
             const secret = user[0].password + '-' + user[0].createdAt;
             const payload = jwt.decode(token, secret);
@@ -129,7 +128,7 @@ exports.receiveNewPassword = (req, res, next) => {
                 let salt = bcrypt.genSaltSync(10),
                     hash = bcrypt.hashSync(password, salt);
 
-                users.findByIdAndUpdatePassword(hash, user[0].id)
+                User.findByIdAndUpdatePassword(hash, user[0].id)
                     .then(() => res.status(202).json('Password changed accepted'))
                     .catch(err => res.status(500).json(err));
             }
