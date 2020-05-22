@@ -5,7 +5,8 @@ let express = require('express'),
     errorHandler = require('./controllers/error').errorHandler,
     authRoutes = require('./routes/auth'),
     userRoutes = require('./routes/users'),
-    readingRoutes = require('./routes/readings');
+    readingRoutes = require('./routes/readings'),
+    searchRoutes = require('./routes/search');
 
 const PORT = process.env.PORT || 8080;
 
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/readings', readingRoutes);
+app.use('/api/search', searchRoutes);
 
 app.use(function(req, res, next) {
     let err = new Error('Not Found');

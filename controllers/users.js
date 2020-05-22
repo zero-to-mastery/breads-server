@@ -22,16 +22,16 @@ exports.findSubscriptions = async (req, res, next) => {
     }
 }
 
-exports.searchUsers = async (req, res, next) => {
-    try {
-        let results = await User.findBySearch(req.query.users);
-        return res.status(200).json(results);
-    }
-    catch (err) {
-        console.log('search - controllers/users');
-        return next(err);
-    }
-}
+// exports.searchUsers = async (req, res, next) => {
+//     try {
+//         let results = await User.findBySearch(req.query.users);
+//         return res.status(200).json(results);
+//     }
+//     catch (err) {
+//         console.log('search - controllers/users');
+//         return next(err);
+//     }
+// }
 
 exports.updateUser = async (req, res, next) => {
     try {

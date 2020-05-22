@@ -27,7 +27,7 @@ router.get('/:id/notifications', notifications.findNewSubscriptions);
 router.put('/:id/notifications', notifications.removeNotification);
 
 // SEARCH
-router.get('/search', users.searchUsers);
+// router.get('/search', users.searchUsers);
 
 //RESET PASSWORD
 router.post('/reset', sendEmail);
