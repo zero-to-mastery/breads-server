@@ -45,7 +45,7 @@ class Reading {
 
     static findAll() {
         let readings = new Promise(function (resolve, reject) {
-            db.connection.query('SELECT readings.id, title, domain, word_count, url, readings.created_at, readings.user_id, username, image, first_name, last_name FROM readings LEFT JOIN users ON users.id = readings.user_id ORDER BY readings.id DESC', function (err, results) {
+            db.connection.query(' SELECT readings.id, title, domain, word_count, url, readings.created_at, readings.user_id, username, image, first_name, last_name, favorites.user_id as favorite FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id ORDER BY readings.id DESC', function (err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -81,6 +81,26 @@ class Reading {
             });
         });
         return websites;
+    }
+
+    static markFavorite(id, user_id) {
+        let favorite = new Promise((resolve, reject) => {
+            db.connection.query('INSERT INTO favorites (user_id, reading_id) VALUES (?, ?)', [user_id, id], function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return favorite;
+    }
+
+    static deleteFavorite(id, user_id) {
+        let favorite = new Promise((resolve, reject) => {
+            db.connection.query('DELETE FROM favorites WHERE user_id = ? AND reading_id = ?', [user_id, id], function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return favorite;
     }
 
     static delete(id) {

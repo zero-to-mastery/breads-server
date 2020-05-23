@@ -49,6 +49,20 @@ module.exports.connection = connection;
 //     PRIMARY KEY(subscriber_id, publisher_id)
 // );
 
+// CREATE TABLE favorites (
+//     user_id INTEGER NOT NULL,
+//     reading_id INTEGER NOT NULL,
+//     created_at TIMESTAMP DEFAULT NOW(),
+//     FOREIGN KEY(user_id) REFERENCES users(id),
+//     FOREIGN KEY(reading_id) REFERENCES readings(id),
+//     PRIMARY KEY(user_id, reading_id)
+// );
+
 // ALTER TABLE users ADD FULLTEXT (first_name, last_name, username);
 // ALTER TABLE subscriptions ADD COLUMN isNew INT DEFAULT 1 AFTER created_at;
 // ALTER TABLE readings DROP INDEX url;
+
+// solid bookmark <- state readings.data.favorite <- readings controller findall <- favs table joined with readings table
+// empty bookmark -> action markFavorite -> readings routes -> readings model markFavorite
+
+// favorites should be in state!
