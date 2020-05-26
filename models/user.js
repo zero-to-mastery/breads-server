@@ -11,11 +11,11 @@ class User {
         this.image = image
     }
 
-    async create(user) {  
+    static create(user) {
         let salt = bcrypt.genSaltSync(10),
-            hash = bcrypt.hashSync(password, salt);
+            hash = bcrypt.hashSync(user.password, salt);
         
-        password = hash;
+        user.password = hash;
         let newUser = new Promise((resolve, reject) => {
             db.connection.query('INSERT INTO users SET ?', user, function (err, results) {
                 if (err) reject(err);
@@ -115,6 +115,15 @@ class User {
         return updatedUser;
     }
 
+    static findFavorites(id) {
+        let favorites = new Promise((resolve, reject) => {
+            db.connection.query('SELECT reading_id, user_id FROM favorites WHERE user_id = ?', id, function(err, results) {
+                if (err) reject(err);
+                else resolve(results)
+            });
+        });
+        return favorites;
+    }
 }
 
 module.exports = User;

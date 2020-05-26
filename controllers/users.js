@@ -22,6 +22,17 @@ exports.findSubscriptions = async (req, res, next) => {
     }
 }
 
+exports.findFavorites = async (req, res, next) => {
+    try {
+        let favorites = await User.findFavorites(req.params.id);
+        return res.status(200).json(favorites);
+    }
+    catch (err) {
+        console.log('favorites - controllers/users');
+        return next(err);
+    }
+}
+
 // exports.searchUsers = async (req, res, next) => {
 //     try {
 //         let results = await User.findBySearch(req.query.users);

@@ -29,6 +29,9 @@ router.put('/:id/notifications', notifications.removeNotification);
 // SEARCH
 // router.get('/search', users.searchUsers);
 
+// FAVORITES
+router.get('/:id/favorites', users.findFavorites);
+
 //RESET PASSWORD
 router.post('/reset', sendEmail);
 router.post('/:username/reset/:token', receiveNewPassword);
