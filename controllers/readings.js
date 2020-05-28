@@ -56,9 +56,19 @@ exports.findUserReadings = async (req, res, next) => {
     }
 }
 
+exports.findFavoriteReadings = async (req, res, next) => {
+    try {
+        let favoriteReadings = await Reading.findFavoriteReadings(req.params.id);
+        return res.status(200).json(favoriteReadings);
+    }
+    catch (err) {
+        console.log('findFavoriteReadings - controllers/readings');
+        return next(err);
+    }
+}
+
 exports.markFavorite = async (req, res, next) => {
     try {
-        console.log(req.params.id, req.params.user_id);
         let favoritedReading = await Reading.markFavorite(req.params.id, req.params.user_id);
         return res.status(200).json(favoritedReading);
     }
@@ -70,7 +80,6 @@ exports.markFavorite = async (req, res, next) => {
 
 exports.deleteFavorite = async (req, res, next) => {
     try {
-        console.log(req.params.id, req.params.user_id);
         let favoritedReading = await Reading.deleteFavorite(req.params.id, req.params.user_id);
         return res.status(200).json(favoritedReading);
     }

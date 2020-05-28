@@ -83,6 +83,16 @@ class Reading {
         return websites;
     }
 
+    static findFavoriteReadings(id) {
+        let favoriteReadings = new Promise((resolve, reject) => {
+            db.connection.query('SELECT readings.id, title, domain, word_count, url, readings.created_at, readings.user_id, username, image, favorites.user_id as favorite FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id WHERE favorites.user_id = ? ORDER BY readings.id DESC;', id, function(err, results) {
+                if (err) reject(err);
+                return resolve(results);
+            });
+        });
+        return favoriteReadings;
+    }
+
     static markFavorite(id, user_id) {
         let favorite = new Promise((resolve, reject) => {
             db.connection.query('INSERT INTO favorites (user_id, reading_id) VALUES (?, ?)', [user_id, id], function(err, results) {
