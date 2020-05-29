@@ -10,6 +10,7 @@ let express = require('express'),
 
 
 router.get('', users.findAllUsers);
+router.get('/:id', users.findUser);
 router.put('/:id', users.updateUser);
 // DELETE /api/users/:id
 
@@ -25,9 +26,6 @@ router.delete('/:user_id/subscriptions/:sub_id', subscriptions.deleteSubscriptio
 // NOTIFICATIONS
 router.get('/:id/notifications', notifications.findNewSubscriptions);
 router.put('/:id/notifications', notifications.removeNotification);
-
-// SEARCH
-// router.get('/search', users.searchUsers);
 
 // FAVORITES
 router.get('/:id/favorites', users.findFavorites);

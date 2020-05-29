@@ -11,6 +11,17 @@ exports.findAllUsers = async (req, res, next) => {
     }
 }
 
+exports.findUser = async (req, res, next) => {
+    try {
+        let user = await User.findById(req.params.id);
+        return res.status(200).json(user);
+    }
+    catch (err) {
+        console.log('findUser - controllers/users');
+        return next(err);
+    }
+}
+
 exports.findSubscriptions = async (req, res, next) => {
     try {
         let subscriptions = await User.findSubscriptionsById(req.params.id);
@@ -32,17 +43,6 @@ exports.findFavorites = async (req, res, next) => {
         return next(err);
     }
 }
-
-// exports.searchUsers = async (req, res, next) => {
-//     try {
-//         let results = await User.findBySearch(req.query.users);
-//         return res.status(200).json(results);
-//     }
-//     catch (err) {
-//         console.log('search - controllers/users');
-//         return next(err);
-//     }
-// }
 
 exports.updateUser = async (req, res, next) => {
     try {
