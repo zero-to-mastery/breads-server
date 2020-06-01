@@ -1,23 +1,17 @@
-import requests
+import requests, re, sys, json
 from bs4 import BeautifulSoup
-import re
-import mysql.connector as mysql
-import sys
 from dotenv import load_dotenv
-import os
-from fake_useragent import UserAgent
-from fake_useragent import FakeUserAgentError
+from fake_useragent import UserAgent, FakeUserAgentError
 from goose3 import Goose
 
 load_dotenv()
 
 BASE_URL = sys.argv[1]
 USER_ID = sys.argv[2]
-
-word_count = 0
 reading = ''
 title = ''
 domain = ''
+word_count = 0
 
 def useragent_generator():
     fallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
@@ -28,14 +22,14 @@ def useragent_generator():
     headers = str(ua.random)
     return headers
 
-def get_reading():
+def get_reading_data():
     global reading
     try:
         g = Goose({'browser_user_agent': useragent_generator()})
         reading = g.extract(url=BASE_URL)
     except:
         reading = 'None'
-    print(reading)
+    # print(reading)
 
 def get_title():
     global title
@@ -43,7 +37,7 @@ def get_title():
         title = reading.title
     elif title == '':
         title = 'Unable to get title of article'
-    print(title)
+    # print(title)
 
 def get_domain():
     global domain
@@ -52,7 +46,7 @@ def get_domain():
         domain = domain.group()
     except:
         domain = 'Unable to get domain'
-    print(domain)
+    # print(domain)
 
 def get_word_count():
     global word_count
@@ -61,25 +55,13 @@ def get_word_count():
     else:
         word_list = ['None']
     word_count = len(word_list)
-    print(word_count)
+    # print(word_count)
 
-get_reading()
+get_reading_data()
 get_title()
 get_domain()
 get_word_count()
 
-db = mysql.connect(
-    host= os.getenv('HOST') or 'localhost',
-    user= os.getenv('USERNAME') or 'root',
-    passwd= os.getenv('DBPASSWORD') or 'Basebal6$',
-    database= os.getenv('DB') or 'articly',
-    auth_plugin= os.getenv('AUTHPLUGIN')
-)
-
-cursor = db.cursor()
-
-query = 'INSERT INTO readings (title, domain, word_count, url, user_id) VALUES (%(title)s, %(domain)s, %(word_count)s, %(url)s, %(user_id)s)'
-# values = (title, domain, word_count, BASE_URL, USER_ID)
 values = {
     'title': title, 
     'domain': domain,
@@ -87,8 +69,6 @@ values = {
     'url': BASE_URL,
     'user_id': USER_ID
 }
-print(values)
-cursor.execute(query, values)
-db.commit()
 
-print(cursor.rowcount, 'record inserted')
+# print to send data to node.js
+print(json.dumps(values))

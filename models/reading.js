@@ -19,12 +19,21 @@ class Reading {
                 return resolve(data);
             });
         })
-        return reading;
+        reading.then(data => {
+            let values = JSON.parse(data[0]);
+            let query = new Promise(function (resolve, reject) {
+                db.connection.query('INSERT INTO readings SET ?', values, function (err, results) {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            });
+            return query;
+        });
     }
 
     static findById(id) {
         let reading = new Promise(function (resolve, reject) {
-            db.connection.query('SELECT * FROM readings WHERE id = ?', id, function (err, results) { //readings
+            db.connection.query('SELECT * FROM readings WHERE id = ?', id, function (err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
