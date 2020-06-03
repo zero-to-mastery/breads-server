@@ -2,6 +2,7 @@ require('dotenv').config();
 let express = require('express'),
     app = express(),
     bodyParser  = require('body-parser'),
+    helmet = require('helmet'),
     errorHandler = require('./controllers/error').errorHandler,
     authRoutes = require('./routes/auth'),
     userRoutes = require('./routes/users'),
@@ -19,6 +20,7 @@ app.use(function (req, res, next) {
     else next();
 });
 
+app.use(helmet());
 app.use(bodyParser.json());
 
 app.use('/api/auth', authRoutes);
