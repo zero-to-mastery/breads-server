@@ -3,10 +3,10 @@ let mysql = require('mysql');
 
 let localSetup = {
     connectionLimit: 25,
-    host: process.env.HOST || 'localhost',
-    user: process.env.USERNAME || 'root',
-    password: process.env.DBPASSWORD || 'Basebal6$',
-    database: process.env.DB || 'articly'
+    host: process.env.HOST || process.env.LOCAL_HOST,
+    user: process.env.USERNAME || process.env.LOCAL_USER,
+    password: process.env.DBPASSWORD || process.env.LOCAL_DBPASSWORD,
+    database: process.env.DB || process.env.LOCAL_DB
 }
 
 // let connection = mysql.createConnection(localSetup);
