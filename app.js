@@ -24,8 +24,8 @@ const PORT = process.env.PORT || 8080;
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'"]
+        defaultSrc: ["'self'", 'https://staging-breads-server.herokuapp.com/'],
+        scriptSrc: ["'self'", 'https://staging-breads-server.herokuapp.com/']
     }
 }));
 app.use(bodyParser.json());
