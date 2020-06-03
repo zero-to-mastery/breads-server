@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 8080;
 app.use(helmet());
 app.use(bodyParser.json());
 
-const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herokuapp.com/', process.env.LOCAL_CORS];
+const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herokuapp.com', process.env.LOCAL_CORS];
 const corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1) {
