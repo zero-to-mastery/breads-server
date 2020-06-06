@@ -9,7 +9,7 @@ let express = require('express'),
     userRoutes = require('./routes/users'),
     readingRoutes = require('./routes/readings'),
     searchRoutes = require('./routes/search'),
-    router = express.Router({ mergeParams: true });
+    cspReportRoutes = require('./routes/cspReport');
 
 const PORT = process.env.PORT || 8080;
 
@@ -50,12 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/readings', readingRoutes);
 app.use('/api/search', searchRoutes);
-
-// Handle CSP Report
-router.post('/api/csp-report', (req, res) => {
-    console.log('CSP header violation', req.body['csp-report'])
-    return res.status(204);
-});
+app.use('/api/csp-report', cspReportRoutes);
 
 // "Content-Security-Policy-Report-Only": "default-src 'self' https://staging-breads-server.herokuapp.com https://breads-server.herokuapp.com; script-src 'self' https://staging-breads-server.herokuapp.com https://breads-server.herokuapp.com 'sha256-IjRw88EIRqqX+VpFI3slzD4qzNuRp0RfxZuz50uE2eQ='; img-src 'self' https://images.unsplash.com http://res.cloudinary.com https://staging-breads-client.herokuapp.com https://www.breads.io data:; style-src 'self' 'sha256-UTjtaAWWTyzFjRKbltk24jHijlTbP20C1GUYaWPqg7E=' 'sha256-deDIoPlRijnpfbTDYsK+8JmDfUBmpwpnb0L/SUV8NeU='; report-uri https://staging-breads-server.herokuapp.com/api/csp-report",
 
