@@ -54,7 +54,7 @@ class Reading {
 
     static findAll() {
         let readings = new Promise(function (resolve, reject) {
-            db.connection.query('SELECT readings.id, title, domain, word_count, url, readings.created_at, readings.user_id, username, image, first_name, last_name, favorites.user_id as favorite FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id ORDER BY readings.id DESC', function (err, results) {
+            db.connection.query('SELECT readings.id, title, domain, word_count, url, readings.created_at, readings.user_id, username, image, favorites.user_id as favorite FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id ORDER BY readings.id DESC', function (err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });

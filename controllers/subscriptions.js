@@ -23,11 +23,26 @@ exports.createSubscription = async (req, res, next) => {
 exports.findSubscriptionReadings = async (req, res, next) => {
     try {
         let subReadings = await Subscription.findSubReadings(req.params.id);
-        let subWebsites = await Subscription.findSubWebsites(req.params.id);
-        return res.status(200).json({
-            data: subReadings,
-            websites: subWebsites
+        // let subWebsites = await Subscription.findSubWebsites(req.params.id);
+        let sub = subReadings.map(reading => {
+            return reading = {
+                'id': reading.id,
+                'title': reading.title,
+                'domain': reading.domain,
+                'word_count': reading.word_count,
+                'url': reading.url,
+                'created_at': reading.created_at,
+                'favorite': reading.favorite,
+                'reader': {
+                    'id': reading.user_id,
+                    'username': reading.username,
+                    'image': reading.image
+                }
+            }
         });
+        return res.status(200).json(sub);
+            // data: ,
+            // websites: subWebsites
     }
     catch (err) {
         console.log('findSubscriptionReadings - controllers/subscriptions');

@@ -29,11 +29,27 @@ exports.summarizeReading = async (req, res, next) => {
 exports.findAllReadings = async (req, res, next) => {
     try {
         let allReadings = await Reading.findAll();
-        let allWebsites = await Reading.findWebsites();
-        return res.status(200).json({
-            data: allReadings,
-            websites: allWebsites
+        // let allWebsites = await Reading.findWebsites();
+        let all = allReadings.map(reading => {
+            return reading = {
+                'id': reading.id,
+                'title': reading.title,
+                'domain': reading.domain,
+                'word_count': reading.word_count,
+                'url': reading.url,
+                'created_at': reading.created_at,
+                'favorite': reading.favorite,
+                'reader': {
+                    'id': reading.user_id,
+                    'username': reading.username,
+                    'image': reading.image
+                }
+            }
         });
+        return res.status(200).json(all);
+            // data: ,
+            // websites: allWebsites
+        
     }
     catch (err) {
         console.log('findAllReadings - controllers/readings');
@@ -44,11 +60,27 @@ exports.findAllReadings = async (req, res, next) => {
 exports.findUserReadings = async (req, res, next) => {
     try {
         let userReadings = await Reading.findByUserId(req.params.id);
-        let userWebsites = await Reading.findWebsitesByUserId(req.params.id);
-        return res.status(200).json({
-            data: userReadings,
-            websites: userWebsites
+        // let userWebsites = await Reading.findWebsitesByUserId(req.params.id);
+        let user = userReadings.map(reading => {
+            return reading = {
+                'id': reading.id,
+                'title': reading.title,
+                'domain': reading.domain,
+                'word_count': reading.word_count,
+                'url': reading.url,
+                'created_at': reading.created_at,
+                'favorite': reading.favorite,
+                'reader': {
+                    'id': reading.user_id,
+                    'username': reading.username,
+                    'image': reading.image
+                }
+            }
         });
+        return res.status(200).json(user);
+            // data: ,
+            // websites: userWebsites
+        
     }
     catch (err) {
         console.log('findUserReadings - controllers/readings');
@@ -59,7 +91,23 @@ exports.findUserReadings = async (req, res, next) => {
 exports.findFavoriteReadings = async (req, res, next) => {
     try {
         let favoriteReadings = await Reading.findFavoriteReadings(req.params.id);
-        return res.status(200).json(favoriteReadings);
+        let fav = favoriteReadings.map(reading => {
+            return reading = {
+                'id': reading.id,
+                'title': reading.title,
+                'domain': reading.domain,
+                'word_count': reading.word_count,
+                'url': reading.url,
+                'created_at': reading.created_at,
+                'favorite': reading.favorite,
+                'reader': {
+                    'id': reading.user_id,
+                    'username': reading.username,
+                    'image': reading.image
+                }
+            }
+        });
+        return res.status(200).json(fav);
     }
     catch (err) {
         console.log('findFavoriteReadings - controllers/readings');
