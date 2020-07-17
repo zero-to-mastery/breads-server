@@ -10,7 +10,7 @@ load_dotenv()
 # session = HTMLSession()
 
 
-# BASE_URL = 'https://www.bloomberg.com/news/articles/2020-07-16/carson-block-warns-tesla-short-sellers-i-wouldn-t-do-that?sref=73c0pvQV'
+# BASE_URL = 'https://techcrunch.com/2020/07/16/u-s-beat-china-on-app-store-downloads-for-first-time-since-2014-due-to-coronavirus-impact/'
 
 
 # soup = BeautifulSoup(r.html, 'html.parser')
@@ -87,7 +87,7 @@ def get_title():
     if reading != 'None' and reading.title != '' and title == '':
         title = reading.title
         description = reading.meta_description
-        image = reading.opengraph.image
+        image = reading.opengraph['image']
     elif title == '':
         title = 'Unable to get title of article'
         description = 'Unable to get description'
