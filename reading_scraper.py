@@ -1,4 +1,4 @@
-import requests, re, sys, json
+import requests, re, sys, json, os
 # from requests_html import HTMLSession
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
@@ -10,7 +10,7 @@ load_dotenv()
 # session = HTMLSession()
 
 
-# BASE_URL = 'https://www.bloomberg.com/news/articles/2020-06-22/schwarzman-sees-big-v-economic-rebound-over-next-few-months?sref=73c0pvQV'
+# BASE_URL = 'https://www.bloomberg.com/news/articles/2020-07-16/carson-block-warns-tesla-short-sellers-i-wouldn-t-do-that?sref=73c0pvQV'
 
 
 # soup = BeautifulSoup(r.html, 'html.parser')
@@ -20,9 +20,12 @@ CACHED = 'http://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
 USER_ID = sys.argv[2]
 reading = ''
 title = ''
+description = ''
+image = ''
 domain = ''
 word_count = 0
 special_sites = ['www.bloomberg.com'] # list of domains that registers us as robots
+link_preview = os.getenv('LINK_PREVIEW_KEY')
 
 def useragent_generator():
     fallback = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36'
@@ -34,36 +37,61 @@ def useragent_generator():
     # print(headers)
     return headers
 
-def get_reading_data(url, cached_url):
-    global reading
-    global special_sites
-    try:
-        g = Goose({'browser_user_agent': useragent_generator()})
+full_headers = {
+    'Accept': '*/*',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+    'Cache-Control': 'no-cache',
+    'DNT': '1',
+    'Origin': 'https://www.bloomberg.com',
+    'Pragma': 'no-cache',
+    'Referer': BASE_URL,
+    'User-Agent': useragent_generator(),
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'cross-site',
+    'Upgrade-Insecure-Requests': '1',
+}
 
-        # parse article
+def get_reading_data(url, cached_url):
+    global reading, title, description, image, special_sites
+
+    try:
+        g = Goose({'http_headers': full_headers})
+        # g = Goose({'browser_user_agent': useragent_generator()})
+        # extract info with goose
         reading = g.extract(url = url)
 
-        # if domain is 'special' or if title is blank, try cached version
+        # if domain is 'special' or if title/description is blank, try cached version
         if (any(domain in url for domain in special_sites) or
-            reading.title == ''):
+            (reading.title == '' or reading.meta_description == '')):
             # print('needing to cache')
             reading = g.extract(url=cached_url)
             # print(reading.title)
         
         #  if we cache and 404 error is thrown, back to normal
         if ('Error 404 (Not Found)' in reading.title):
-            # print('not using cache')
-            reading = g.extract(url = url)
+            # print('using link preview')
+            r = requests.get(f'http://api.linkpreview.net/?key={link_preview}&q={url}')
+            j = r.json()
+            title = j['title']
+            description = j['description']
+            image = j['image']
     except:
         reading = 'None'
     # print(reading)
 
 def get_title():
-    global title
-    if reading != 'None' and reading.title != '':
+    global title, description, image
+    if reading != 'None' and reading.title != '' and title == '':
         title = reading.title
+        description = reading.meta_description
+        image = reading.opengraph.image
     elif title == '':
         title = 'Unable to get title of article'
+        description = 'Unable to get description'
+        image = ''
     # print(title)
 
 def get_domain():
@@ -75,16 +103,8 @@ def get_domain():
         domain = 'Unable to get domain'
     # print(domain)
 
-# full_headers = {
-#     "content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-#     "DNT": "1",
-#     "Origin": 'https://' + get_domain(),
-#     "Referer": BASE_URL,
-#     "User-Agent": 'Googlebot-News'
-#     # "User-Agent": useragent_generator()
-# }
-# print(full_headers)
-# r = session.get(CACHED, headers = full_headers)
+
+# r = session.get(BASE_URL, headers = full_headers)
 # r.html.render()
 # print(r.html.text)
 
@@ -105,9 +125,11 @@ get_word_count()
 values = {
     'title': title, 
     'domain': domain,
+    'description': description,
+    'image': image,
     'word_count': word_count, 
     'url': BASE_URL,
-    # 'user_id': USER_ID
+    'user_id': USER_ID
 }
 
 # print(values)

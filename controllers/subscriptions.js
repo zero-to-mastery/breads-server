@@ -20,6 +20,7 @@ exports.createSubscription = async (req, res, next) => {
     }
 }
 
+// move to readings
 exports.findSubscriptionReadings = async (req, res, next) => {
     try {
         let subReadings = await Subscription.findSubReadings(req.params.id);
@@ -29,6 +30,8 @@ exports.findSubscriptionReadings = async (req, res, next) => {
                 'id': reading.id,
                 'title': reading.title,
                 'domain': reading.domain,
+                'description': reading.description,
+                'reading_image': reading.readings_image,
                 'word_count': reading.word_count,
                 'url': reading.url,
                 'created_at': reading.created_at,
@@ -41,8 +44,6 @@ exports.findSubscriptionReadings = async (req, res, next) => {
             }
         });
         return res.status(200).json(sub);
-            // data: ,
-            // websites: subWebsites
     }
     catch (err) {
         console.log('findSubscriptionReadings - controllers/subscriptions');

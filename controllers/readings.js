@@ -35,6 +35,8 @@ exports.findAllReadings = async (req, res, next) => {
                 'id': reading.id,
                 'title': reading.title,
                 'domain': reading.domain,
+                'description': reading.description,
+                'reading_image': reading.readings_image,
                 'word_count': reading.word_count,
                 'url': reading.url,
                 'created_at': reading.created_at,
