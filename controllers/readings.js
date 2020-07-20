@@ -84,6 +84,35 @@ exports.findUserReadings = async (req, res, next) => {
     }
 }
 
+exports.findSubscriptionReadings = async (req, res, next) => {
+    try {
+        let subReadings = await Reading.findSubReadings(req.params.id);
+        let sub = subReadings.map(reading => {
+            return reading = {
+                'id': reading.id,
+                'title': reading.title,
+                'domain': reading.domain,
+                'description': reading.description,
+                'reading_image': reading.readings_image,
+                'word_count': reading.word_count,
+                'url': reading.url,
+                'created_at': reading.created_at,
+                'favorite': reading.favorite,
+                'reader': {
+                    'id': reading.user_id,
+                    'username': reading.username,
+                    'image': reading.image
+                }
+            }
+        });
+        return res.status(200).json(sub);
+    }
+    catch (err) {
+        console.log('findSubscriptionReadings - controllers/readings');
+        return next(err);
+    }
+}
+
 exports.findFavoriteReadings = async (req, res, next) => {
     try {
         let favoriteReadings = await Reading.findFavoriteReadings(req.params.id);
