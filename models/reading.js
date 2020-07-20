@@ -74,28 +74,6 @@ class Reading {
         return userReadings;
     }
 
-    // don't need anymore
-    static findWebsites() {
-        let websites = new Promise((resolve, reject) => {
-            db.connection.query('SELECT domain FROM readings GROUP BY domain ORDER BY COUNT(domain) DESC', function(err, results) {
-                if (err) reject(err);
-                return resolve(results);
-            });
-        });
-        return websites;
-    }
-
-    // don't need anymore
-    static findWebsitesByUserId(id) {
-        let websites = new Promise((resolve, reject) => {
-            db.connection.query('SELECT domain FROM readings WHERE user_id = ? GROUP BY domain ORDER BY COUNT(domain) DESC', id, function(err, results) {
-                if (err) reject(err);
-                return resolve(results);
-            });
-        });
-        return websites;
-    }
-
     static findFavoriteReadings(id) {
         let favoriteReadings = new Promise((resolve, reject) => {
             db.connection.query('SELECT readings.id, title, domain, description, readings.image as readings_image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id as favorite FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id WHERE favorites.user_id = ? ORDER BY readings.id DESC;', id, function(err, results) {
