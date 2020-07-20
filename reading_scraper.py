@@ -1,20 +1,13 @@
 import requests, re, sys, json, os
-# from requests_html import HTMLSession
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from fake_useragent import UserAgent, FakeUserAgentError
 from goose3 import Goose
 
 load_dotenv()
 
-# session = HTMLSession()
+# BASE_URL = 'https://www.politico.com/news/2020/07/19/ruth-bader-ginsburg-scotus-transparency-370570'
 
-
-# BASE_URL = 'https://techcrunch.com/2020/07/16/u-s-beat-china-on-app-store-downloads-for-first-time-since-2014-due-to-coronavirus-impact/'
-
-
-# soup = BeautifulSoup(r.html, 'html.parser')
-# print(soup)
 BASE_URL = sys.argv[1]
 CACHED = 'http://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
 USER_ID = sys.argv[2]
@@ -87,6 +80,7 @@ def get_title():
     if reading != 'None' and reading.title != '' and title == '':
         title = reading.title
         description = reading.meta_description
+        if (description == ''): description = reading.opengraph['description']
         image = reading.opengraph['image']
     elif title == '':
         title = 'Unable to get title of article'
@@ -102,11 +96,6 @@ def get_domain():
     except:
         domain = 'Unable to get domain'
     # print(domain)
-
-
-# r = session.get(BASE_URL, headers = full_headers)
-# r.html.render()
-# print(r.html.text)
 
 def get_word_count():
     global word_count
