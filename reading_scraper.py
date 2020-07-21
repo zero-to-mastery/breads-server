@@ -6,7 +6,7 @@ from goose3 import Goose
 
 load_dotenv()
 
-# BASE_URL = 'https://www.politico.com/news/2020/07/19/ruth-bader-ginsburg-scotus-transparency-370570'
+# BASE_URL = 'https://daedtech.com/5-things-ive-learned-in-20-years-of-programming/'
 
 BASE_URL = sys.argv[1]
 CACHED = 'http://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
@@ -78,13 +78,23 @@ def get_reading_data(url, cached_url):
 def get_title():
     global title, description, image
     if reading != 'None' and reading.title != '' and title == '':
-        title = reading.title
-        description = reading.meta_description
-        if (description == ''): description = reading.opengraph['description']
-        image = reading.opengraph['image']
+        if ('title' in reading.opengraph):
+            title = reading.opengraph['title']
+        if (title == '' and reading.title):
+            title = reading.title
+        
+        if ('description' in reading.opengraph):
+            description = reading.opengraph['description']
+        if (description == '' and reading.meta_description):
+            description = reading.meta_description
+        
+        if ('image' in reading.opengraph):
+            image = reading.opengraph['image']
+        if (image == '' and reading.top_image):
+            image = reading.top_image
     elif title == '':
         title = 'Unable to get title of article'
-        description = 'Unable to get description'
+        description = ''
         image = ''
     # print(title)
 
