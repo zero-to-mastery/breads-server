@@ -92,7 +92,7 @@ def get_title():
             image = reading.opengraph['image']
         if (image == '' and reading.top_image):
             image = reading.top_image
-    elif title == '':
+    if title == '' or 'Error 404 (Not Found)' in title:
         title = 'Unable to get title of article'
         description = ''
         image = ''
