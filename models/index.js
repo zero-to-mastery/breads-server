@@ -61,8 +61,5 @@ module.exports.connection = connection;
 // ALTER TABLE users ADD FULLTEXT (first_name, last_name, username);
 // ALTER TABLE subscriptions ADD COLUMN isNew INT DEFAULT 1 AFTER created_at;
 // ALTER TABLE readings DROP INDEX url;
-
-// solid bookmark <- state readings.data.favorite <- readings controller findall <- favs table joined with readings table
-// empty bookmark -> action markFavorite -> readings routes -> readings model markFavorite
-
-// favorites should be in state!
+// ALTER TABLE readings ADD COLUMN description varchar(500) AFTER domain;
+// ALTER TABLE readings ADD COLUMN image varchar(255) AFTER description;
