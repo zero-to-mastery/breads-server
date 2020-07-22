@@ -123,6 +123,27 @@ class Reading {
         });
         return user;
     }
+
+    static update(url, user_id, reading_id) {
+        let options = { args: [url, user_id] };
+        let reading = new Promise((resolve, reject) => {
+            PythonShell.run('reading_scraper.py', options, function (err, data) {
+                if (err) reject(err);
+                return resolve(data);
+            });
+        })
+        reading.then(data => {
+            let values = JSON.parse(data[0]);
+            console.log(values);
+            let query = new Promise(function (resolve, reject) {
+                db.connection.query('UPDATE readings SET ? WHERE id = ?', [values, reading_id], function (err, results) {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            });
+            return query;
+        });
+    }
 }
 
 module.exports = Reading;

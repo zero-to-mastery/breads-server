@@ -4,6 +4,7 @@ let express = require('express'),
 
 router.get('', readings.findAllReadings);
 router.get('/:id', readings.findUserReadings);
+router.put('/:reading_id', readings.updateReading);
 router.get('/:id/subscriptions', readings.findSubscriptionReadings);
 router.get('/:id/favorites', readings.findFavoriteReadings)
 router.get('/:id/summary', readings.summarizeReading);
