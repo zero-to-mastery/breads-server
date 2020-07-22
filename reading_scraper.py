@@ -56,15 +56,14 @@ def get_reading_data(url, cached_url):
         # extract info with goose
         reading = g.extract(url = url)
 
-        # if domain is 'special' or if title/description is blank, try cached version
-        if (any(domain in url for domain in special_sites) or
-            (reading.title == '' or reading.meta_description == '')):
+        # if domain is 'special' or if title is blank, try cached version
+        if (any(domain in url for domain in special_sites) or reading.title == ''):
             # print('needing to cache')
             reading = g.extract(url=cached_url)
             # print(reading.title)
         
         #  if we cache and 404 error is thrown, back to normal
-        if ('Error 404 (Not Found)' in reading.title):
+        if ('Error 404 (Not Found)' in reading.title or 'https:///search?q=cache:' in reading.title):
             # print('using link preview')
             r = requests.get(f'http://api.linkpreview.net/?key={link_preview}&q={url}')
             j = r.json()
