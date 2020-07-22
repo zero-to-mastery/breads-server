@@ -177,7 +177,7 @@ exports.updateReading = async (req, res, next) => {
     try {
         // console.log(req.body.url, req.body.user_id, req.params.reading_id)
         let reading = await Reading.update(req.body.url, req.body.user_id, req.params.reading_id);
-        // return res.status(200).json(reading);
+        return res.status(200).json(reading);
     }
     catch (err) {
         console.log('updateReading - controllers/readings');
