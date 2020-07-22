@@ -9,7 +9,7 @@ load_dotenv()
 # BASE_URL = 'https://daedtech.com/5-things-ive-learned-in-20-years-of-programming/'
 
 BASE_URL = sys.argv[1]
-CACHED = 'http://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
+CACHED = 'https://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
 USER_ID = sys.argv[2]
 reading = ''
 title = ''
