@@ -37,7 +37,6 @@ full_headers = {
     'content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     'Cache-Control': 'no-cache',
     'DNT': '1',
-    'Origin': 'https://www.bloomberg.com',
     'Pragma': 'no-cache',
     'Referer': BASE_URL,
     'User-Agent': useragent_generator(),
@@ -48,7 +47,7 @@ full_headers = {
 }
 
 def get_reading_data(url, cached_url):
-    global reading, title, description, image, special_sites
+    global reading, title, description, image, special_sites, full_headers
 
     try:
         g = Goose({'http_headers': full_headers})
@@ -57,8 +56,26 @@ def get_reading_data(url, cached_url):
         reading = g.extract(url = url)
 
         # if domain is 'special' or if title is blank, try cached version
-        if (any(domain in url for domain in special_sites) or reading.title == ''):
+        if (reading.title == '' 
+            # or '403 Forbidden' in reading.title 
+            or any(domain in url for domain in special_sites)):
             # print('needing to cache')
+            # update header to refer from google
+            full_headers = {
+                'Accept': '*/*',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Cache-Control': 'no-cache',
+                'DNT': '1',
+                'Pragma': 'no-cache',
+                'Referer': 'https://www.google.com/',
+                'User-Agent': useragent_generator(),
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'cross-site',
+                'Upgrade-Insecure-Requests': '1',
+            }
             reading = g.extract(url=cached_url)
             # print(reading.title)
         
