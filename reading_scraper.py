@@ -57,7 +57,7 @@ def get_reading_data(url, cached_url):
 
         # if domain is 'special' or if title is blank, try cached version
         if (reading.title == '' 
-            # or '403 Forbidden' in reading.title 
+            or '403 Forbidden' in reading.title 
             or any(domain in url for domain in special_sites)):
             # print('needing to cache')
             # update header to refer from google
