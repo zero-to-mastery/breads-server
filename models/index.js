@@ -63,3 +63,4 @@ module.exports.connection = connection;
 // ALTER TABLE readings DROP INDEX url;
 // ALTER TABLE readings ADD COLUMN description varchar(500) AFTER domain;
 // ALTER TABLE readings ADD COLUMN image varchar(255) AFTER description;
+// ALTER TABLE readings MODIFY image varchar(500);
