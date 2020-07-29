@@ -21,7 +21,8 @@ class Reading {
                 return resolve(data);
             });
         })
-        reading.then(data => {
+
+        let createdResult = reading.then(data => {
             let values = JSON.parse(data[0]);
             let query = new Promise(function (resolve, reject) {
                 db.connection.query('INSERT INTO readings SET ?', values, function (err, results) {
@@ -31,6 +32,8 @@ class Reading {
             });
             return query;
         });
+
+        return createdResult;
     }
 
     static findById(id) {
@@ -132,7 +135,8 @@ class Reading {
                 return resolve(data);
             });
         })
-        reading.then(data => {
+
+        let updateResult = reading.then(data => {
             let values = JSON.parse(data[0]);
             console.log(values);
             let query = new Promise(function (resolve, reject) {
@@ -143,6 +147,8 @@ class Reading {
             });
             return query;
         });
+        
+        return updateResult;
     }
 }
 
