@@ -76,13 +76,23 @@ class User {
     }
     
     static findSubscriptionsById(sub_id) {
-        let pubs = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, first_name, last_name, username, image FROM subscriptions LEFT JOIN users ON publisher_id = users.id WHERE subscriber_id = ? ORDER BY id DESC', sub_id, function(err, results) {
+        let following = new Promise((resolve, reject) => {
+            db.connection.query('SELECT id, username, image FROM subscriptions LEFT JOIN users ON publisher_id = users.id WHERE subscriber_id = ? ORDER BY id DESC', sub_id, function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
         });
-        return pubs;
+        return following;
+    }
+
+    static findFollowersById(id) {
+        let followers = new Promise((resolve, reject) => {
+            db.connection.query('SELECT id, username, image FROM subscriptions LEFT JOIN users ON subscriber_id = users.id WHERE publisher_id = ? ORDER BY id DESC', id, function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return followers;
     }
 
     static findBySearch(string) {

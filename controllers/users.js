@@ -24,8 +24,12 @@ exports.findUser = async (req, res, next) => {
 
 exports.findSubscriptions = async (req, res, next) => {
     try {
-        let subscriptions = await User.findSubscriptionsById(req.params.id);
-        return res.status(200).json(subscriptions);
+        let following = await User.findSubscriptionsById(req.params.id);
+        let followers = await User.findFollowersById(req.params.id);
+        return res.status(200).json({
+            following,
+            followers
+        });
     }
     catch (err) {
         console.log('findSubscriptions - controllers/users');
