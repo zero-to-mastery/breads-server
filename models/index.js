@@ -64,3 +64,19 @@ module.exports.connection = connection;
 // ALTER TABLE readings ADD COLUMN description varchar(500) AFTER domain;
 // ALTER TABLE readings ADD COLUMN image varchar(255) AFTER description;
 // ALTER TABLE readings MODIFY image varchar(500);
+
+// CREATE TABLE tags (
+//   id INTEGER AUTO_INCREMENT PRIMARY KEY,
+//   tag_name VARCHAR(255) UNIQUE,
+//   created_at TIMESTAMP DEFAULT NOW()
+// );
+
+// CREATE TABLE reading_tags (
+//     reading_id INTEGER NOT NULL,
+//     user_id INTEGER NOT NULL,
+//     tag_id INTEGER NOT NULL,
+//     FOREIGN KEY(reading_id) REFERENCES readings(id),
+//     FOREIGN KEY(user_id) REFERENCES users(id),
+//     FOREIGN KEY(tag_id) REFERENCES tags(id),
+//     PRIMARY KEY(reading_id, user_id, tag_id)
+// );
