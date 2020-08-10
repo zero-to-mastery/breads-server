@@ -47,6 +47,26 @@ class Tags {
         });
         return id;
     }
+
+    static findTagsByReadingId(reading_id) {
+        let tags = new Promise((resolve, reject) => {
+            db.connection.query('SELECT id as tag_id, tag_name, reading_tags.reading_id as reading_id, reading_tags.user_id as user_id FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id WHERE reading_tags.reading_id = ?', reading_id, function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return tags;
+    }
+
+    static findAll() {
+        let tags = new Promise((resolve, reject) => {
+            db.connection.query('SELECT id as tag_id, tag_name, reading_tags.reading_id as reading_id, reading_tags.user_id as user_id FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id ORDER BY reading_tags.reading_id DESC', function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return tags;
+    }
 }
 
 module.exports = Tags;
