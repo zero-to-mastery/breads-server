@@ -1,12 +1,18 @@
-let Reading = require('../models/reading');
+let Reading = require('../models/reading'),
+    Tags = require('../models/tags');
 
 exports.createReading = async (req, res, next) => {
     try {
         let reading = await Reading.create(req.body.url, req.params.id);
+        if (req.body.tags) {
+            await Tags.create(req.body.tags);
+            await Tags.addToReading(req.body.url, req.body.tags, req.params.id);
+        }
         return res.status(200).json(reading);
     }
     catch (err) {
         console.log('createReading - controllers/readings');
+        console.log(err);
         return next(err);
     }
 }

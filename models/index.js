@@ -80,3 +80,5 @@ module.exports.connection = connection;
 //     FOREIGN KEY(tag_id) REFERENCES tags(id),
 //     PRIMARY KEY(reading_id, user_id, tag_id)
 // );
+
+// ALTER TABLE tags ADD COLUMN count INTEGER DEFAULT 1;

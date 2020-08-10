@@ -118,13 +118,13 @@ class Reading {
     }
 
     static delete(id) {
-        let user = new Promise((resolve, reject) => {
+        let deletedReading = new Promise((resolve, reject) => {
             db.connection.query('DELETE FROM readings WHERE id = ?', id, function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
         });
-        return user;
+        return deletedReading;
     }
 
     static update(url, user_id, reading_id) {
@@ -149,6 +149,16 @@ class Reading {
         });
         
         return updateResult;
+    }
+
+    static findIdByUrl(url) {
+        let id = new Promise((resolve, reject) => {
+            db.connection.query('SELECT id FROM readings WHERE url = ?', url, function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return id;
     }
 }
 
