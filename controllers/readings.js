@@ -80,7 +80,8 @@ exports.findUserReadings = async (req, res, next) => {
                     'id': reading.user_id,
                     'username': reading.username,
                     'image': reading.image
-                }
+                },
+                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
             }
         });
         return res.status(200).json(user);
@@ -109,7 +110,8 @@ exports.findSubscriptionReadings = async (req, res, next) => {
                     'id': reading.user_id,
                     'username': reading.username,
                     'image': reading.image
-                }
+                },
+                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
             }
         });
         return res.status(200).json(sub);
@@ -136,7 +138,8 @@ exports.findFavoriteReadings = async (req, res, next) => {
                     'id': reading.user_id,
                     'username': reading.username,
                     'image': reading.image
-                }
+                },
+                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
             }
         });
         return res.status(200).json(fav);
