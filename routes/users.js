@@ -35,7 +35,4 @@ router.get('/:id/favorites', users.findFavorites);
 router.post('/reset', sendEmail);
 router.post('/:username/reset/:token', receiveNewPassword);
 
-// TAGS
-router.get('/:id/tags', tags.findUserTags);
-
 module.exports = router;
