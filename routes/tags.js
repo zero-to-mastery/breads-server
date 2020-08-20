@@ -3,6 +3,6 @@ let express = require('express'),
     tags = require('../controllers/tags');
     
 router.get('', tags.findAllTags);
-router.get('/:id', tags.findReadingTags);
+router.get('/:id', tags.findUserTags);
 
 module.exports = router;

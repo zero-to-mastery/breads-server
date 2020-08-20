@@ -6,7 +6,8 @@ let express = require('express'),
     subscriptions = require('../controllers/subscriptions'),
     readings = require('../controllers/readings'),
     sendEmail = require('../controllers/auth').sendPasswordResetEmail,
-    receiveNewPassword = require('../controllers/auth').receiveNewPassword;
+    receiveNewPassword = require('../controllers/auth').receiveNewPassword,
+    tags = require('../controllers/tags');
 
 
 router.get('', users.findAllUsers);
@@ -33,5 +34,8 @@ router.get('/:id/favorites', users.findFavorites);
 //RESET PASSWORD
 router.post('/reset', sendEmail);
 router.post('/:username/reset/:token', receiveNewPassword);
+
+// TAGS
+router.get('/:id/tags', tags.findUserTags);
 
 module.exports = router;

@@ -10,14 +10,7 @@ exports.findAllTags = async (req, res, next) => {
                 'reading_id': tag.reading_id.split(','),
                 'user_id': tag.user_id.split(','),
                 'date': tag.date,
-                'count': tag.count,
-                // 'favorite': tag.favorite,
-                // 'reader': {
-                //     'id': tag.user_id,
-                //     'username': tag.username,
-                //     'image': tag.image
-                // },
-                // 'tags': tag.tag_ids ? tag.tag_ids.split(',') : null
+                'count': tag.count
             }
         });
         return res.status(200).json(tags);
@@ -28,6 +21,34 @@ exports.findAllTags = async (req, res, next) => {
         return next(err);
     }
 }
+
+// findUserTags
+
+exports.findUserTags = async (req, res, next) => {
+    try {
+        let userTags = await Tags.findUserTags(req.params.id);
+        let tags = userTags.map(tag => {
+            return tag = {
+                'id': tag.id,
+                'tag_name': tag.tag_name,
+                'reading_id': tag.reading_id.split(','),
+                'user_id': tag.user_id.split(','),
+                'date': tag.date,
+                'count': tag.count
+            }
+        });
+        return res.status(200).json(tags);
+    }
+    catch (err) {
+        console.log('findTagsByReadingId - controllers/tags');
+        console.log(err);
+        return next(err);
+    }
+}
+// findSubscriptionTags
+// addTag
+// updateTag
+// deleteTag
 
 exports.findReadingTags = async (req, res, next) => {
     try {

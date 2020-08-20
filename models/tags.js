@@ -48,9 +48,19 @@ class Tags {
         return id;
     }
 
-    static findTagsByReadingId(reading_id) {
+    // static findTagsByReadingId(reading_id) {
+    //     let tags = new Promise((resolve, reject) => {
+    //         db.connection.query('SELECT id as tag_id, tag_name, reading_tags.reading_id as reading_id, reading_tags.user_id as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id WHERE reading_tags.reading_id = ?', reading_id, function(err, results) {
+    //             if (err) reject(err);
+    //             else resolve(results);
+    //         });
+    //     });
+    //     return tags;
+    // }
+
+    static findAll() {
         let tags = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id as tag_id, tag_name, reading_tags.reading_id as reading_id, reading_tags.user_id as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id WHERE reading_tags.reading_id = ?', reading_id, function(err, results) {
+            db.connection.query('SELECT id, tag_name, GROUP_CONCAT(reading_tags.reading_id) as reading_id, GROUP_CONCAT(reading_tags.user_id) as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id GROUP BY id, tag_name, created_at, count ORDER BY created_at DESC', function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -58,9 +68,9 @@ class Tags {
         return tags;
     }
 
-    static findAll() {
+    static findUserTags(user_id) {
         let tags = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, tag_name, GROUP_CONCAT(reading_tags.reading_id) as reading_id, GROUP_CONCAT(reading_tags.user_id) as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id GROUP BY id, tag_name, created_at, count ORDER BY created_at DESC;', function(err, results) {
+            db.connection.query('SELECT id, tag_name, GROUP_CONCAT(reading_tags.reading_id) as reading_id, GROUP_CONCAT(reading_tags.user_id) as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id WHERE reading_tags.user_id = ? GROUP BY id, tag_name, created_at, count ORDER BY created_at DESC', user_id, function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
