@@ -80,7 +80,7 @@ class Tags {
 
     static findSubscriptionTags(user_id) {
         let tags = new Promise((resolve, reject) => {
-            db.connection.query(' SELECT id, tag_name, GROUP_CONCAT(reading_tags.reading_id) as reading_id, GROUP_CONCAT(reading_tags.user_id) as user_id, tags.created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id LEFT JOIN subscriptions ON reading_tags.user_id = publisher_id WHERE subscriptions.subscriber_id = ? GROUP BY id, tag_name, tags.created_at, count ORDER BY tags.created_at DESC', user_id, function(err, results) {
+            db.connection.query('SELECT id, tag_name, GROUP_CONCAT(reading_tags.reading_id) as reading_id, GROUP_CONCAT(reading_tags.user_id) as user_id, tags.created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id LEFT JOIN subscriptions ON reading_tags.user_id = publisher_id WHERE subscriptions.subscriber_id = ? GROUP BY id, tag_name, tags.created_at, count ORDER BY tags.created_at DESC', user_id, function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
