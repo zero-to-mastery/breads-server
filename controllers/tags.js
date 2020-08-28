@@ -1,5 +1,18 @@
 let Tags = require('../models/tags');
 
+exports.createTags = async (req, res, next) => {
+    try {
+        let newTag = await Tags.create(req.body.tags);
+        await Tags.addToReading(req.body.reading_url, req.body.tags, req.params.id)
+        return res.status(200).json(newTag);
+    }
+    catch (err) {
+        console.log('createTag - controllers/tags');
+        console.log(err);
+        return next(err);
+    }
+}
+
 exports.findAllTags = async (req, res, next) => {
     try {
         let allTags = await Tags.findAll();
