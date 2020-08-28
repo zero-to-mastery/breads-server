@@ -48,16 +48,6 @@ class Tags {
         return id;
     }
 
-    // static findTagsByReadingId(reading_id) {
-    //     let tags = new Promise((resolve, reject) => {
-    //         db.connection.query('SELECT id as tag_id, tag_name, reading_tags.reading_id as reading_id, reading_tags.user_id as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id WHERE reading_tags.reading_id = ?', reading_id, function(err, results) {
-    //             if (err) reject(err);
-    //             else resolve(results);
-    //         });
-    //     });
-    //     return tags;
-    // }
-
     static findAll() {
         let tags = new Promise((resolve, reject) => {
             db.connection.query('SELECT id, tag_name, GROUP_CONCAT(reading_tags.reading_id) as reading_id, GROUP_CONCAT(reading_tags.user_id) as user_id, created_at as date, count FROM reading_tags LEFT JOIN tags ON tags.id = reading_tags.tag_id GROUP BY id, tag_name, created_at, count ORDER BY created_at DESC', function(err, results) {
@@ -86,6 +76,23 @@ class Tags {
             });
         });
         return tags;
+    }
+
+    static async deleteFromReading(url, tags, user_id) {
+        let tagsArray = tags.split('#').filter(tag => tag !== '').map(tag => [tag.trim()]);
+        let readingId = await Reading.findIdByUrl(url);
+        let tagId;
+        let readingTags = await Promise.all(tagsArray.map(async tag => {
+            tagId = await this.findIdByTagName(tag);
+            return [readingId[0].id, tagId[0].id, parseInt(user_id)];
+        }));
+        let query = new Promise((resolve, reject) => {
+            db.connection.query('DELETE FROM reading_tags WHERE (reading_id, tag_id, user_id) IN ?', [[readingTags]], function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            })
+        })
+        return query;
     }
 }
 

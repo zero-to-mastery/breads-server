@@ -78,9 +78,25 @@ exports.findSubscriptionTags = async (req, res, next) => {
         return next(err);
     }
 }
-// addTag
-// updateTag
-// deleteTag
+
+exports.updateTags = async (req, res, next) => {
+    try {
+        // add new tags to tags and reading_tags table
+        if (req.body.add_tags) {
+            await Tags.create(req.body.add_tags);
+            await Tags.addToReading(req.body.reading_url, req.body.add_tags, req.params.id);
+        }
+        
+        // remove old tags from reading_tags table (keep in tags table)
+        if (req.body.delete_tags) await Tags.deleteFromReading(req.body.reading_url, req.body.delete_tags, req.params.id);
+        return res.status(200).json('Update successful');
+    }
+    catch (err) {
+        console.log('updateTags - controllers/tags');
+        console.log(err);
+        return next(err);
+    }
+}
 
 exports.findReadingTags = async (req, res, next) => {
     try {
