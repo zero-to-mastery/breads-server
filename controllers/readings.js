@@ -174,6 +174,7 @@ exports.deleteFavorite = async (req, res, next) => {
 
 exports.deleteReading = async (req, res, next) => {
     try {
+        Tags.delete(req.params.reading_id);
         let deletedReading = await Reading.delete(req.params.reading_id);
         return res.status(200).json(deletedReading);
     }
