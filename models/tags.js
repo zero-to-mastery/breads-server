@@ -78,6 +78,16 @@ class Tags {
         return tags;
     }
 
+    static delete(reading_id) {
+        let query = new Promise((resolve, reject) => {
+            db.connection.query('DELETE FROM reading_tags WHERE reading_id = ?', reading_id, function(err, results) {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+        return query;
+    }
+
     static async deleteFromReading(url, tags, user_id) {
         let tagsArray = tags.split('#').filter(tag => tag !== '').map(tag => [tag.trim()]);
         let readingId = await Reading.findIdByUrl(url);
