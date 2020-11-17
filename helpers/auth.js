@@ -18,17 +18,7 @@ exports.usePasswordHashToMakeToken = user => {
     return token;
 }
 
-exports.transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_LOGIN,
-        pass: process.env.EMAIL_PASSWORD
-    }
-});
-
-exports.getPasswordResetURL = (user, token) =>
-    `${process.env.EMAIL_URL}/reset/${user[0].username}/${token}`
-    // `http://localhost:3000/reset/${user[0].username}/${token}`
+exports.getPasswordResetURL = (user, token) => `${process.env.EMAIL_URL}/reset/${user[0].username}/${token}`;
 
 exports.resetPasswordTemplate = (user, url) => {
     const from = process.env.EMAIL_LOGIN;
@@ -42,6 +32,28 @@ exports.resetPasswordTemplate = (user, url) => {
         <p>If you don’t use this link within 1 hour, it will expire.</p>
         <p>Read something fun today! </p>
         <p>–Your friends at Breads</p>
-    `
-    return { from, to, subject, html }
+    `;
+    return { from, to, subject, html };
 }
+
+exports.sendEmail = (emailTemplate, next) => {
+    transporter.sendMail(emailTemplate, (err, info) => {
+        if (err) {
+            console.log(err);
+            return next({
+                status: 500,
+                message: 'Error sending email'
+            });
+        }
+        console.log(`** Email sent **`, info.response)
+        return res.status(202).json('Reset password email sent')
+    })
+}
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_LOGIN,
+        pass: process.env.EMAIL_PASSWORD
+    }
+});

@@ -2,7 +2,7 @@ let jwt = require('jsonwebtoken'),
     bcrypt = require('bcrypt'),
     comparePassword = require('../helpers/auth').comparePassword,
     User = require('../models/user'),
-    transporter = require('../helpers/auth').transporter,
+    sendEmail = require('../helpers/auth').sendEmail,
     getPasswordResetURL = require('../helpers/auth').getPasswordResetURL,
     resetPasswordTemplate = require('../helpers/auth').resetPasswordTemplate,
     usePasswordHashToMakeToken = require('../helpers/auth').usePasswordHashToMakeToken,
@@ -88,32 +88,22 @@ exports.signin = async function(req, res, next) {
 
 exports.sendPasswordResetEmail = async (req, res, next) => {
     const { email } = req.body;
-    let user;
+
     try {
-        user = await User.findByEmail(email);
+        const user = await User.findByEmail(email);
+        const token = usePasswordHashToMakeToken(user);
+        const url = getPasswordResetURL(user, token);
+        const emailTemplate = resetPasswordTemplate(user, url);
+        sendEmail(emailTemplate, next);
+        return res.status(200).json({
+            message: 'Email sent'
+        });
     } catch (err) {
         return next({
             status: 404,
-            message: 'No user with that email'
+            message: 'Error sending email'
         });
     }
-    const token = usePasswordHashToMakeToken(user);
-    const url = getPasswordResetURL(user, token);
-    const emailTemplate = resetPasswordTemplate(user, url);
-  
-    const sendEmail = () => {
-        transporter.sendMail(emailTemplate, (err, info) => {
-            if (err) {
-                return next({
-                    status: 500,
-                    message: 'Error sending email'
-                });
-            }
-            // console.log(`** Email sent **`, info.response)
-            return res.status(202).json('Reset password email sent')
-        })
-    }
-    sendEmail();
 }
 
 exports.receiveNewPassword = (req, res, next) => {
@@ -129,7 +119,9 @@ exports.receiveNewPassword = (req, res, next) => {
                     hash = bcrypt.hashSync(password, salt);
 
                 User.findByIdAndUpdatePassword(hash, user[0].id)
-                    .then(() => res.status(202).json('Password changed accepted'))
+                    .then(() => res.status(202).json({
+                        message: 'Password changed accepted'
+                    }))
                     .catch(err => res.status(500).json(err));
             }
         })
