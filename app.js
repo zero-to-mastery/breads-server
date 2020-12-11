@@ -1,12 +1,11 @@
-const compression = require('compression');
-
 require('dotenv').config();
 let express = require('express'),
     app = express(),
     helmet = require('helmet'),
     bodyParser  = require('body-parser'),
     cors = require('cors'),
-    gzip = require('compression'),
+    compression = require('compression'),
+    morgan = require('morgan'),
     errorHandler = require('./controllers/error').errorHandler,
     authRoutes = require('./routes/auth'),
     userRoutes = require('./routes/users'),
@@ -35,6 +34,7 @@ app.use(helmet.contentSecurityPolicy({
     }
 }));
 app.use(bodyParser.json());
+app.use(morgan('combined'));
 
 const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herokuapp.com', 'https://jw00ds.github.io/', process.env.LOCAL_CORS];
 const corsOptions = {
