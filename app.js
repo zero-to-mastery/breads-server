@@ -1,9 +1,12 @@
+const compression = require('compression');
+
 require('dotenv').config();
 let express = require('express'),
     app = express(),
     helmet = require('helmet'),
     bodyParser  = require('body-parser'),
-    cors = require('cors');
+    cors = require('cors'),
+    gzip = require('compression'),
     errorHandler = require('./controllers/error').errorHandler,
     authRoutes = require('./routes/auth'),
     userRoutes = require('./routes/users'),
@@ -23,6 +26,7 @@ const PORT = process.env.PORT || 8080;
 //     else next();
 // });
 
+app.use(compression());
 app.use(helmet());
 app.use(helmet.contentSecurityPolicy({
     directives: {
