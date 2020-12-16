@@ -36,7 +36,7 @@ app.use(helmet.contentSecurityPolicy({
 app.use(bodyParser.json());
 app.use(morgan('combined'));
 
-const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herokuapp.com', 'https://jw00ds.github.io/', process.env.LOCAL_CORS];
+const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herokuapp.com', 'https://jw00ds.github.io', process.env.LOCAL_CORS];
 const corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1) {
