@@ -3,11 +3,11 @@
 An Express REST API service, Python web scraper, and MySQL database for [breads.io](https://www.breads.io/). See [breads-client](https://github.com/aTmb405/breads-client) for front end code and more details about the project.
 
 ## Table of Contents
-* [Installing](https://github.com/aTmb405/breads-client/blob/master/README.md#Installing)
-* [Running](https://github.com/aTmb405/breads-client/blob/master/README.md#Running)
-* [Testing](https://github.com/aTmb405/breads-client/blob/master/README.md#Testing)
-* [Deploying](https://github.com/aTmb405/breads-client/blob/master/README.md#Deploying)
-* [Technologies](https://github.com/aTmb405/breads-client/blob/master/README.md#Technologies)
+* [Installing](https://github.com/aTmb405/breads-server/blob/master/README.md#Installing)
+* [Running](https://github.com/aTmb405/breads-server/blob/master/README.md#Running)
+* [Testing](https://github.com/aTmb405/breads-server/blob/master/README.md#Testing)
+* [Deploying](https://github.com/aTmb405/breads-server/blob/master/README.md#Deploying)
+* [Technologies](https://github.com/aTmb405/breads-server/blob/master/README.md#Technologies)
 
 ## Installing
 
@@ -42,7 +42,7 @@ After confirming the tests have passed, create a pull request on the development
 * [Python](https://www.python.org/)
 * [MySQL](https://www.mysql.com/)
 
-## Near Future
+### Near Future
 
 * [CircleCI](https://circleci.com/)
 * [Prettier](https://prettier.io/)
