@@ -41,10 +41,10 @@ Make sure the necessary dependencies are installed, add environment variables, a
   `CLOUDINARY_API_KEY` - API Key  
   `CLOUDINARY_API_SECRET` - API Secret
 
-  **[Link Preview](https://www.linkpreview.net/)** - Used as a fallback for the webscraper. Set up a free account to get an API key  
+  **[Link Preview](https://www.linkpreview.net/)** - Used as a fallback for the webscraper. Set up a free account to get an API key _(only needed if working on webscraper)_  
   `LINK_PREVIEW_KEY` - API Key
   
-  **Nodemailer** - Used to send password reset emails. Add an email login information _(only need if working on reset password feature)_  
+  **Nodemailer** - Used to send password reset emails. Add an email login information _(only needed if working on reset password feature)_  
   `EMAIL_LOGIN` - email address  
   `EMAIL_PASSWORD` - email password  
   `EMAIL_URL` - frontend url (i.e 'http://localhost:3000')
