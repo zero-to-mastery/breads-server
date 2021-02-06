@@ -21,8 +21,29 @@ NOTE: In the rest of the documentation, you will come across npm being used for 
 
 ## Running
 
-Make sure the necessary dependencies are installed and type the command `npm start`
+Make sure the necessary dependencies are installed, add environment variables, and type the command `npm start`
 
+### Environment Variables
+
+  `LOCAL_CORS` - url and port for front end
+  
+  **MySQL**  
+  `LOCAL_HOST` - local MySQL hostname  
+	`LOCAL_USER` - local MySQL username  
+	`LOCAL_DBPASSWORD` - local MySQL password  
+	`LOCAL_DB` - local MySQL database name
+  
+  **JWT**  
+  `SECRET_KEY` - JWT secret key
+  
+  **[Cloudinary](https://cloudinary.com/)** - Used for image hosting. Set up a free account to get a cloud name, API key, and API Secret  
+	`CLOUDINARY_CLOUD_NAME` - Cloud Name  
+	`CLOUDINARY_API_KEY` - API Key  
+	`CLOUDINARY_API_SECRET` - API Secret
+
+  **[Link Preview](https://www.linkpreview.net/)** - Used as a fallback for the webscraper. Set up a free account to get an API key  
+  `LINK_PREVIEW_KEY` - API Key
+  
 ## Testing
 
 At this moment, there are no tests.
