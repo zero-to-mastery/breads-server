@@ -25,29 +25,29 @@ Make sure the necessary dependencies are installed, add environment variables, a
 
 ### Environment Variables
 
-  `LOCAL_CORS` - frontend url (i.e. 'http://localhost:3000')
+  - `LOCAL_CORS` - frontend url (i.e. 'http://localhost:3000')
   
   **MySQL**  
-  `LOCAL_HOST` - local MySQL hostname  
-  `LOCAL_USER` - local MySQL username  
-  `LOCAL_DBPASSWORD` - local MySQL password  
-  `LOCAL_DB` - local MySQL database name
+  - `LOCAL_HOST` - local MySQL hostname  
+  - `LOCAL_USER` - local MySQL username  
+  - `LOCAL_DBPASSWORD` - local MySQL password  
+  - `LOCAL_DB` - local MySQL database name
   
-  **JWT** - create a secret key for hashing passwords  
-  `SECRET_KEY` - JWT secret key
+  **JWT** - create a secret key for JWT based authentication  
+  - `SECRET_KEY` - JWT secret key
   
-  **[Cloudinary](https://cloudinary.com/)** - Used for image hosting. Set up a free account to get a cloud name, API key, and API Secret  
-  `CLOUDINARY_CLOUD_NAME` - Cloud Name  
-  `CLOUDINARY_API_KEY` - API Key  
-  `CLOUDINARY_API_SECRET` - API Secret
+  **[Cloudinary](https://cloudinary.com/)** - Used for image hosting. Set up a free account to get a cloud name, API key, and API Secret _(only needed if working on user CRUD)_  
+  - `CLOUDINARY_CLOUD_NAME` - Cloud Name  
+  - `CLOUDINARY_API_KEY` - API Key  
+  - `CLOUDINARY_API_SECRET` - API Secret
 
   **[Link Preview](https://www.linkpreview.net/)** - Used as a fallback for the webscraper. Set up a free account to get an API key _(only needed if working on webscraper)_  
-  `LINK_PREVIEW_KEY` - API Key
+  - `LINK_PREVIEW_KEY` - API Key
   
   **Nodemailer** - Used to send password reset emails. Add an email login information _(only needed if working on reset password feature)_  
-  `EMAIL_LOGIN` - email address  
-  `EMAIL_PASSWORD` - email password  
-  `EMAIL_URL` - frontend url (i.e 'http://localhost:3000')
+  - `EMAIL_LOGIN` - email address  
+  - `EMAIL_PASSWORD` - email password  
+  - `EMAIL_URL` - frontend url (i.e 'http://localhost:3000')
   
 ## Testing
 
