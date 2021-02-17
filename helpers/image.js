@@ -19,3 +19,19 @@ exports.uploads = file => {
     });
     return imageUpload;
 }
+
+exports.setImage = index => {
+    const imageUrls = [
+        'https://res.cloudinary.com/breads/image/upload/v1613539776/naan_mzwzze.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539707/breadsticks_tzpz9b.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539680/focaccia_jasnlz.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539636/pita_aqpuld.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539580/tortilla_fvnmgn.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539536/sourdough_kb4mt4.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539497/baguette_sa1wgi.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539400/crumpet_rlznki.jpg',
+        'https://res.cloudinary.com/breads/image/upload/v1613539360/ciabatta_y34dzx.jpg'
+    ]
+
+    return imageUrls[index];
+}
