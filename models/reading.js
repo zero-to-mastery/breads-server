@@ -1,5 +1,6 @@
 let db = require('.'),
-    { PythonShell } = require('python-shell');
+    { PythonShell } = require('python-shell'),
+    queries = require('../queries/reading');
 
 class Reading {
     constructor(id, title, domain, description, image, word_count, url, user_id) {
@@ -59,7 +60,7 @@ class Reading {
 
     static findAll() {
         let readings = new Promise(function (resolve, reject) {
-            db.connection.query('SELECT readings.id, title, domain, description, readings.image as readings_image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id as favorite, GROUP_CONCAT(reading_tags.tag_id) as tag_ids FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id LEFT JOIN reading_tags on reading_tags.reading_id = readings.id GROUP BY readings.id, title, domain, description, readings.image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id ORDER BY readings.id', function (err, results) {
+            db.connection.query(queries.selectAllReadings, function (err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -69,7 +70,7 @@ class Reading {
 
     static findByUserId(id) {
         let userReadings = new Promise(function(resolve, reject) {
-            db.connection.query('SELECT readings.id, title, domain, description, readings.image as readings_image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id as favorite, GROUP_CONCAT(reading_tags.tag_id) as tag_ids FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id LEFT JOIN reading_tags on reading_tags.reading_id = readings.id WHERE readings.user_id = ? GROUP BY readings.id, title, domain, description, readings.image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id ORDER BY readings.id DESC', id, function(err, results) {
+            db.connection.query(queries.selectUserReadings, id, function(err, results) {
                 if (err) reject(err);
                 return resolve(results);
             });
@@ -79,7 +80,7 @@ class Reading {
 
     static findSubReadings(sub_id) {
         let subscriptionReadings = new Promise((resolve, reject) => {
-            db.connection.query('SELECT readings.id, title, domain, description, readings.image as readings_image, word_count, url, readings.created_at, username, users.image, readings.user_id, favorites.user_id as favorite, GROUP_CONCAT(reading_tags.tag_id) as tag_ids FROM subscriptions INNER JOIN readings ON publisher_id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id INNER JOIN users ON readings.user_id = users.id LEFT JOIN reading_tags on reading_tags.reading_id = readings.id WHERE subscriber_id = ? GROUP BY readings.id, title, domain, description, readings.image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id ORDER BY readings.id DESC', sub_id, function(err, results) {
+            db.connection.query(queries.selectSubscriptionReadings, sub_id, function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -89,7 +90,7 @@ class Reading {
 
     static findFavoriteReadings(id) {
         let favoriteReadings = new Promise((resolve, reject) => {
-            db.connection.query('SELECT readings.id, title, domain, description, readings.image as readings_image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id as favorite, GROUP_CONCAT(reading_tags.tag_id) as tag_ids FROM readings LEFT JOIN users ON users.id = readings.user_id LEFT JOIN favorites on favorites.reading_id = readings.id LEFT JOIN reading_tags on reading_tags.reading_id = readings.id WHERE favorites.user_id = ? GROUP BY readings.id, title, domain, description, readings.image, word_count, url, readings.created_at, readings.user_id, username, users.image, favorites.user_id ORDER BY readings.id DESC;', id, function(err, results) {
+            db.connection.query(queries.selectFavoriteReadings, id, function(err, results) {
                 if (err) reject(err);
                 return resolve(results);
             });
