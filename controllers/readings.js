@@ -36,23 +36,7 @@ exports.findAllReadings = async (req, res, next) => {
     try {
         let allReadings = await Reading.findAll();
         let all = allReadings.map(reading => {
-            return reading = {
-                'id': reading.id,
-                'title': reading.title,
-                'domain': reading.domain,
-                'description': reading.description,
-                'reading_image': reading.readings_image,
-                'word_count': reading.word_count,
-                'url': reading.url,
-                'created_at': reading.created_at,
-                'favorite': reading.favorite,
-                'reader': {
-                    'id': reading.user_id,
-                    'username': reading.username,
-                    'image': reading.image
-                },
-                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
-            }
+            return createReadingsJSON(reading);
         });
         return res.status(200).json(all);
     }
@@ -66,23 +50,7 @@ exports.findUserReadings = async (req, res, next) => {
     try {
         let userReadings = await Reading.findByUserId(req.params.id);
         let user = userReadings.map(reading => {
-            return reading = {
-                'id': reading.id,
-                'title': reading.title,
-                'domain': reading.domain,
-                'description': reading.description,
-                'reading_image': reading.readings_image,
-                'word_count': reading.word_count,
-                'url': reading.url,
-                'created_at': reading.created_at,
-                'favorite': reading.favorite,
-                'reader': {
-                    'id': reading.user_id,
-                    'username': reading.username,
-                    'image': reading.image
-                },
-                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
-            }
+            return createReadingsJSON(reading);
         });
         return res.status(200).json(user);
     }
@@ -96,23 +64,7 @@ exports.findSubscriptionReadings = async (req, res, next) => {
     try {
         let subReadings = await Reading.findSubReadings(req.params.id);
         let sub = subReadings.map(reading => {
-            return reading = {
-                'id': reading.id,
-                'title': reading.title,
-                'domain': reading.domain,
-                'description': reading.description,
-                'reading_image': reading.readings_image,
-                'word_count': reading.word_count,
-                'url': reading.url,
-                'created_at': reading.created_at,
-                'favorite': reading.favorite,
-                'reader': {
-                    'id': reading.user_id,
-                    'username': reading.username,
-                    'image': reading.image
-                },
-                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
-            }
+            return createReadingsJSON(reading);
         });
         return res.status(200).json(sub);
     }
@@ -126,21 +78,7 @@ exports.findFavoriteReadings = async (req, res, next) => {
     try {
         let favoriteReadings = await Reading.findFavoriteReadings(req.params.id);
         let fav = favoriteReadings.map(reading => {
-            return reading = {
-                'id': reading.id,
-                'title': reading.title,
-                'domain': reading.domain,
-                'word_count': reading.word_count,
-                'url': reading.url,
-                'created_at': reading.created_at,
-                'favorite': reading.favorite,
-                'reader': {
-                    'id': reading.user_id,
-                    'username': reading.username,
-                    'image': reading.image
-                },
-                'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
-            }
+            return createReadingsJSON(reading);
         });
         return res.status(200).json(fav);
     }
@@ -193,5 +131,26 @@ exports.updateReading = async (req, res, next) => {
     catch (err) {
         console.log('updateReading - controllers/readings');
         return next(err);
+    }
+}
+
+const createReadingsJSON = reading => {
+    console.log(reading);
+    return {
+        'id': reading.reading_id,
+        'title': reading.title,
+        'domain': reading.domain,
+        'description': reading.description,
+        'reading_image': reading.readings_image,
+        'word_count': reading.word_count,
+        'url': reading.url,
+        'created_at': reading.created_at,
+        'favorite': reading.favorite,
+        'reader': {
+            'id': reading.user_id,
+            'username': reading.username,
+            'image': reading.image
+        },
+        'tags': reading.tag_ids ? reading.tag_ids.split(',') : null
     }
 }
