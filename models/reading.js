@@ -14,32 +14,37 @@ class Reading {
         this.user_id = user_id
     }
     
-    static create(url, id) {
-        let options = { args: [url, id] };
-        let reading = new Promise((resolve, reject) => {
-            PythonShell.run('reading_scraper.py', options, function (err, data) {
+    static async create(url, user_id) {
+        let options = { args: [url, user_id] };
+        let parseReading = await new Promise((resolve, reject) => {
+            PythonShell.run('reading_scraper.py', options, (err, data) =>{
                 if (err) reject(err);
                 return resolve(data);
             });
         })
 
-        let createdResult = reading.then(data => {
-            let values = JSON.parse(data[0]);
-            let query = new Promise(function (resolve, reject) {
-                db.connection.query('INSERT INTO readings SET ?', values, function (err, results) {
-                    if (err) reject(err);
-                    else resolve(results);
-                });
+        const values = JSON.parse(parseReading[0]);
+        const insertReading = await new Promise((resolve, reject) => {
+            db.connection.query(queries.insertReading, values, (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
             });
-            return query;
         });
 
-        return createdResult;
+        const reading_id = insertReading.insertId;
+        const insertUserReading = await new Promise((resolve, reject) => {
+            db.connection.query(queries.insertUserReading, [parseInt(user_id), reading_id], (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
+            });
+        });
+
+        return insertUserReading;
     }
 
     static findById(id) {
         let reading = new Promise(function (resolve, reject) {
-            db.connection.query('SELECT * FROM readings WHERE id = ?', id, function (err, results) {
+            db.connection.query(queries.selectReadingById, id, function (err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -98,9 +103,9 @@ class Reading {
         return favoriteReadings;
     }
 
-    static markFavorite(id, user_id) {
+    static markFavorite(reading_id, user_id) {
         let favorite = new Promise((resolve, reject) => {
-            db.connection.query('INSERT INTO favorites (user_id, reading_id) VALUES (?, ?)', [user_id, id], function(err, results) {
+            db.connection.query(queries.updateFavorite, [user_id, reading_id], function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -110,7 +115,7 @@ class Reading {
 
     static deleteFavorite(id, user_id) {
         let favorite = new Promise((resolve, reject) => {
-            db.connection.query('DELETE FROM favorites WHERE user_id = ? AND reading_id = ?', [user_id, id], function(err, results) {
+            db.connection.query(queries.deleteFavorite, [user_id, id], function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -118,9 +123,9 @@ class Reading {
         return favorite;
     }
 
-    static delete(id) {
+    static delete(user_id, reading_id) {
         let deletedReading = new Promise((resolve, reject) => {
-            db.connection.query('DELETE FROM readings WHERE id = ?', id, function(err, results) {
+            db.connection.query(queries.deleteReading, [user_id, reading_id], function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -141,7 +146,7 @@ class Reading {
             let values = JSON.parse(data[0]);
             console.log(values);
             let query = new Promise(function (resolve, reject) {
-                db.connection.query('UPDATE readings SET ? WHERE id = ?', [values, reading_id], function (err, results) {
+                db.connection.query(queries.updateReading, [values, reading_id], function (err, results) {
                     if (err) reject(err);
                     else resolve(results);
                 });
@@ -154,7 +159,7 @@ class Reading {
 
     static findIdByUrl(url) {
         let id = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id FROM readings WHERE url = ?', url, function(err, results) {
+            db.connection.query(queries.selectReadingIdByUrl, url, function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
