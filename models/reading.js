@@ -159,7 +159,7 @@ class Reading {
 
     static findIdByUrl(url) {
         let id = new Promise((resolve, reject) => {
-            db.connection.query(queries.selectReadingIdByUrl, url, function(err, results) {
+            db.connection.query(queries.selectReadingIdByUrl, [url], function(err, results) {
                 if (err) reject(err);
                 else resolve(results);
             });
