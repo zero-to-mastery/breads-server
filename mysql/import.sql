@@ -209,37 +209,3 @@ INSERT INTO user_tags (
 (4,1),
 (5,4),
 (5,2);
-
-'SELECT 
-    user_readings.reading_id,
-    readings.title,
-    readings.domain,
-    readings.description,
-    readings.image as readings_image,
-    readings.word_count,
-    readings.url,
-    readings.created_at,
-    user_readings.user_id,
-    users.username,
-    users.image,
-    favorites.user_id as favorite,
-    GROUP_CONCAT(reading_tags.tag_id) as tag_ids
-FROM user_readings
-LEFT JOIN readings ON readings.id = user_readings.reading_id
-LEFT JOIN users ON users.id = user_readings.user_id
-LEFT JOIN favorites on favorites.reading_id = user_readings.reading_id
-LEFT JOIN reading_tags on reading_tags.reading_id = user_readings.reading_id
-GROUP BY 
-    user_readings.reading_id,
-    readings.title,
-    readings.domain,
-    readings.description,
-    readings.image,
-    readings.word_count,
-    readings.url,
-    readings.created_at,
-    user_readings.user_id,
-    users.username,
-    users.image,
-    favorites.user_id
-ORDER BY user_readings.reading_id'

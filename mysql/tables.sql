@@ -1,6 +1,5 @@
 ALTER TABLE reading_tags DROP FOREIGN KEY reading_tags_ibfk_1;
 ALTER TABLE reading_tags DROP FOREIGN KEY reading_tags_ibfk_2;
-ALTER TABLE reading_tags DROP FOREIGN KEY reading_tags_ibfk_3;
 DROP TABLE IF EXISTS reading_tags;
 
 ALTER TABLE favorites DROP FOREIGN KEY favorites_ibfk_1;
@@ -10,6 +9,14 @@ DROP TABLE IF EXISTS favorites;
 ALTER TABLE subscriptions DROP FOREIGN KEY subscriptions_ibfk_1;
 ALTER TABLE subscriptions DROP FOREIGN KEY subscriptions_ibfk_2;
 DROP TABLE IF EXISTS subscriptions;
+
+ALTER TABLE user_readings DROP FOREIGN KEY user_readings_ibfk_1;
+ALTER TABLE user_readings DROP FOREIGN KEY user_readings_ibfk_2;
+DROP TABLE IF EXISTS user_readings;
+
+ALTER TABLE user_tags DROP FOREIGN KEY user_tags_ibfk_1;
+ALTER TABLE user_tags DROP FOREIGN KEY user_tags_ibfk_2;
+DROP TABLE IF EXISTS user_tags;
 
 DROP TABLE IF EXISTS tags;
 
@@ -48,6 +55,7 @@ ALTER TABLE readings DROP INDEX url;
 ALTER TABLE readings ADD COLUMN description varchar(500) AFTER domain;
 ALTER TABLE readings ADD COLUMN image varchar(255) AFTER description;
 ALTER TABLE readings MODIFY image varchar(500);
+ALTER TABLE readings ADD COLUMN count INTEGER DEFAULT 1;
 
 -- TAGS
 CREATE TABLE tags (
@@ -64,43 +72,40 @@ CREATE TABLE subscriptions (
     publisher_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY(subscriber_id) REFERENCES users(id),
-    FOREIGN KEY(publisher_id) REFERENCES users(id),
-    PRIMARY KEY(subscriber_id, publisher_id)
+    FOREIGN KEY(publisher_id) REFERENCES users(id)
 );
 
 ALTER TABLE subscriptions ADD COLUMN isNew INT DEFAULT 1 AFTER created_at;
 
 -- FAVORITES
 CREATE TABLE favorites (
-    user_id INTEGER NOT NULL,
-    reading_id INTEGER NOT NULL,
+    user_id INT NOT NULL,
+    reading_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(reading_id) REFERENCES readings(id),
-    PRIMARY KEY(user_id, reading_id)
+    FOREIGN KEY(reading_id) REFERENCES readings(id)
 );
 
 -- READING TAGS
 CREATE TABLE reading_tags (
-    reading_id INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    tag_id INTEGER NOT NULL,
+    reading_id INT NOT NULL,
+    tag_id INT NOT NULL,
     FOREIGN KEY(reading_id) REFERENCES readings(id),
     FOREIGN KEY(tag_id) REFERENCES tags(id)
 );
 
 -- USER READINGS
 CREATE TABLE user_readings (
-    user_id integer NOT NULL,
-    reading_id integer NOT NULL,
+    user_id INT NOT NULL,
+    reading_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(reading_id) REFERENCES readings(id)
-)
+);
 
 -- USER TAGS
 CREATE TABLE user_tags (
-    user_id integer NOT NULL,
-    tag_id integer NOT NULL,
+    user_id INT NOT NULL,
+    tag_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(tag_id) REFERENCES tags(id)
-)
+);
