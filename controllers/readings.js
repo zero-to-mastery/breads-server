@@ -113,7 +113,8 @@ exports.deleteFavorite = async (req, res, next) => {
 exports.deleteReading = async (req, res, next) => {
     try {
         Tags.delete(req.params.reading_id);
-        let deletedReading = await Reading.delete(req.params.reading_id);
+        Reading.deleteFavorite(req.params.reading_id, req.params.id);
+        let deletedReading = await Reading.delete(req.params.id, req.params.reading_id);
         return res.status(200).json(deletedReading);
     }
     catch (err) {
@@ -135,7 +136,6 @@ exports.updateReading = async (req, res, next) => {
 }
 
 const createReadingsJSON = reading => {
-    console.log(reading);
     return {
         'id': reading.reading_id,
         'title': reading.title,
