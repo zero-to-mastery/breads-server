@@ -3,11 +3,9 @@ let Reading = require('../models/reading'),
 
 exports.createReading = async (req, res, next) => {
     try {
-        let reading = await Reading.create(req.body.url, req.params.id);
-        if (req.body.tags) {
-            await Tags.create(req.body.tags);
-            await Tags.addToReading(req.body.url, req.body.tags, req.params.id);
-        }
+        const reading = await Reading.create(req.body.url, req.params.id);
+        const reading_id = reading[0].insertId;
+        if (req.body.tags) await Tags.create(req.body.tags, reading_id, req.params.id);
         return res.status(200).json(reading);
     }
     catch (err) {
@@ -112,7 +110,7 @@ exports.deleteFavorite = async (req, res, next) => {
 
 exports.deleteReading = async (req, res, next) => {
     try {
-        Tags.delete(req.params.reading_id);
+        Tags.deleteWithId(req.params.reading_id);
         Reading.deleteFavorite(req.params.reading_id, req.params.id);
         let deletedReading = await Reading.delete(req.params.id, req.params.reading_id);
         return res.status(200).json(deletedReading);

@@ -25,7 +25,7 @@ class Reading {
 
         const values = JSON.parse(parseReading[0]);
         const insertReading = await new Promise((resolve, reject) => {
-            db.connection.query(queries.insertReading, values, (err, results) => {
+            db.connection.query(queries.insertReading, [[values]], (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -39,7 +39,7 @@ class Reading {
             });
         });
 
-        return insertUserReading;
+        return [insertReading, insertUserReading];
     }
 
     static findById(id) {

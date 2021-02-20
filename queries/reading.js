@@ -1,4 +1,4 @@
-exports.insertReading = `INSERT INTO readings SET ?`;
+exports.insertReading = `INSERT INTO readings (title, domain, description, image, word_count, url) VALUES ?`;
 exports.insertUserReading = `INSERT INTO user_readings (user_id, reading_id) VALUES (?, ?)`;
 exports.selectReadingById = `SELECT * FROM readings WHERE id = ?`;
 exports.updateFavorite = `INSERT INTO favorites (user_id, reading_id) VALUES (?, ?)`;
