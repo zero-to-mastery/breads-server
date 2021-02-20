@@ -2,8 +2,7 @@ let Tags = require('../models/tags');
 
 exports.createTags = async (req, res, next) => {
     try {
-        let newTag = await Tags.create(req.body.tags);
-        await Tags.addToReading(req.body.reading_url, req.body.tags, req.params.id)
+        const newTag = await Tags.create(req.body.tags, req.body.reading_id, req.params.id);
         return res.status(200).json(newTag);
     }
     catch (err) {
@@ -21,7 +20,7 @@ exports.findAllTags = async (req, res, next) => {
                 'id': tag.id,
                 'tag_name': tag.tag_name,
                 'reading_id': tag.reading_id.split(','),
-                'user_id': tag.user_id.split(','),
+                // 'user_id': tag.user_id.split(','),
                 'date': tag.date,
                 'count': tag.count
             }
@@ -42,7 +41,6 @@ exports.findUserTags = async (req, res, next) => {
             return tag = {
                 'id': tag.id,
                 'tag_name': tag.tag_name,
-                'reading_id': tag.reading_id.split(','),
                 'user_id': tag.user_id.split(','),
                 'date': tag.date,
                 'count': tag.count
@@ -51,7 +49,7 @@ exports.findUserTags = async (req, res, next) => {
         return res.status(200).json(tags);
     }
     catch (err) {
-        console.log('findTagsByReadingId - controllers/tags');
+        console.log('findUserTags - controllers/tags');
         console.log(err);
         return next(err);
     }
@@ -64,7 +62,7 @@ exports.findSubscriptionTags = async (req, res, next) => {
             return tag = {
                 'id': tag.id,
                 'tag_name': tag.tag_name,
-                'reading_id': tag.reading_id.split(','),
+                // 'reading_id': tag.reading_id.split(','),
                 'user_id': tag.user_id.split(','),
                 'date': tag.date,
                 'count': tag.count
@@ -83,12 +81,14 @@ exports.updateTags = async (req, res, next) => {
     try {
         // add new tags to tags and reading_tags table
         if (req.body.add_tags) {
-            await Tags.create(req.body.add_tags);
-            await Tags.addToReading(req.body.reading_url, req.body.add_tags, req.params.id);
+            await Tags.create(req.body.add_tags, req.body.reading_id, req.params.id);
         }
         
         // remove old tags from reading_tags table (keep in tags table)
-        if (req.body.delete_tags) await Tags.deleteFromReading(req.body.reading_url, req.body.delete_tags, req.params.id);
+        if (req.body.delete_tags) {
+            await Tags.deleteFromReading(req.body.reading_id, req.body.delete_tags, req.params.id);
+        }
+        
         return res.status(200).json('Update successful');
     }
     catch (err) {

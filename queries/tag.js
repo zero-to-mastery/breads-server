@@ -1,10 +1,10 @@
 exports.insertTags = `INSERT INTO tags (tag_name) VALUES ? ON DUPLICATE KEY UPDATE count = count + 1`;
-exports.insertReadingTags = `INSERT INTO reading_tags (reading_id, tag_id, user_id) VALUES ?`;
+exports.insertReadingTags = `INSERT INTO reading_tags (reading_id, tag_id) VALUES ?`;
 exports.insertUserTags = `INSERT INTO user_tags (user_id, tag_id) VALUES ?`;
 exports.selectIdByTagName = `SELECT id FROM tags WHERE tag_name = ?`;
 exports.deleteTags = `DELETE FROM reading_tags WHERE reading_id = ?`;
-exports.deleteUserTags = `DELETE FROM user_tags WHERE reading_id = ?`;
-exports.deleteReadingTags = `DELETE FROM reading_tags WHERE (reading_id, tag_id, user_id) IN ?`;
+exports.deleteUserTags = `DELETE FROM user_tags WHERE (user_id, tag_id) IN ?`;
+exports.deleteReadingTags = `DELETE FROM reading_tags WHERE (reading_id, tag_id) IN ?`;
 
 exports.selectAllTags = `
     SELECT
