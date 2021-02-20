@@ -10,7 +10,6 @@ load_dotenv()
 
 BASE_URL = sys.argv[1]
 CACHED = 'https://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
-USER_ID = sys.argv[2]
 reading = ''
 title = ''
 description = ''
@@ -137,15 +136,14 @@ get_title()
 get_domain()
 get_word_count()
 
-values = {
-    'title': title, 
-    'domain': domain,
-    'description': description,
-    'image': image,
-    'word_count': word_count, 
-    'url': BASE_URL,
-    'user_id': USER_ID
-}
+values = [
+    title, 
+    domain,
+    description,
+    image,
+    word_count, 
+    BASE_URL
+]
 
 # print(values)
 
