@@ -20,7 +20,6 @@ DROP TABLE IF EXISTS user_tags;
 
 DROP TABLE IF EXISTS tags;
 
-ALTER TABLE readings DROP FOREIGN KEY readings_ibfk_1;
 DROP TABLE IF EXISTS readings;
 
 DROP TABLE IF EXISTS users;
@@ -45,17 +44,13 @@ CREATE TABLE readings (
     title VARCHAR(255) NOT NULL,
     domain VARCHAR(255) NOT NULL,
     word_count INT NOT NULL,
-    url VARCHAR(255) UNIQUE NOT NULL,
-    user_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    url VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
-ALTER TABLE readings DROP INDEX url;
 ALTER TABLE readings ADD COLUMN description varchar(500) AFTER domain;
 ALTER TABLE readings ADD COLUMN image varchar(255) AFTER description;
 ALTER TABLE readings MODIFY image varchar(500);
-ALTER TABLE readings ADD COLUMN count INTEGER DEFAULT 1;
 
 -- TAGS
 CREATE TABLE tags (
