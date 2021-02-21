@@ -1,4 +1,4 @@
-exports.insertUser = `INSERT INTO users SET ?`;
+exports.insertUser = `INSERT INTO users (first_name, last_name, username, email, password, image) VALUES ?`;
 exports.selectByUsername = `SELECT * FROM users WHERE username = ?`;
 exports.selectById = `SELECT id, username, image FROM users WHERE id = ?`;
 exports.selectByEmail = `SELECT * FROM users WHERE email = ?`;
