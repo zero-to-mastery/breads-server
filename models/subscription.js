@@ -1,4 +1,5 @@
-let db = require('.');
+let db = require('.'),
+    queries = require('../queries/subscription');
 
 class Subscription {
     constructor(subscriber_id, publisher_id) {
@@ -8,7 +9,7 @@ class Subscription {
 
     static create(user_id, sub_id) {  
         let subscription = new Promise((resolve, reject) => {
-            db.connection.query('INSERT INTO subscriptions SET ?', [user_id, sub_id], function(err, results) {
+            db.connection.query(queries.insertSubscription, [user_id, sub_id], (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -18,7 +19,7 @@ class Subscription {
 
     static findBySubId(sub_id) {
         let subscription = new Promise((resolve, reject) => {
-            db.connection.query('SELECT * FROM subscriptions WHERE subscriber_id = ?', sub_id, function(err, results) {
+            db.connection.query(queries.selectSubscriptionById, sub_id, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -28,7 +29,7 @@ class Subscription {
 
     static delete(user_id, sub_id) {
         let subscription = new Promise((resolve, reject) => {
-            db.connection.query('DELETE FROM subscriptions WHERE subscriber_id = ? AND publisher_id = ?', [user_id, sub_id], function(err, results) {
+            db.connection.query(queries.deleteSubscription, [user_id, sub_id], (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
