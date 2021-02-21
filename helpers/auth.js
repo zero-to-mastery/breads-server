@@ -1,3 +1,4 @@
+require('dotenv').config();
 const   Datauri = require('datauri'),
         path = require('path'),
         bcrypt = require('bcrypt'),
@@ -42,6 +43,17 @@ exports.generateHash = password => {
     return hash;
 }
 
+exports.createToken = (id, username, image) => {
+    return jwt.sign(
+        { 
+            id,
+            username,
+            image
+        },
+        process.env.SECRET_KEY
+    );
+}
+
 exports.comparePassword = (candidatePassword, password, next) => {
     bcrypt.compare(candidatePassword, password, (err, isMatch) => {
         if(err) return next(err);
@@ -49,8 +61,13 @@ exports.comparePassword = (candidatePassword, password, next) => {
     });
 }
 
-exports.usePasswordHashToMakeToken = user => {
-    const { id, password, created_at } = user[0];
+exports.isRealUser = (user, token) => {
+    const secret = user.password + '-' + user.createdAt;
+    const payload = jwt.decode(token, secret);
+    return payload.id === user.id;
+}
+
+exports.getEmailToken = ({id, password, created_at}) => {
     const secret = password + '-' + created_at;
     const token = jwt.sign({ id }, secret, {
         expiresIn: 3600 // 1 hour
@@ -58,14 +75,14 @@ exports.usePasswordHashToMakeToken = user => {
     return token;
 }
 
-exports.getPasswordResetURL = (user, token) => `${process.env.EMAIL_URL}/reset/${user[0].username}/${token}`;
+exports.getPasswordResetURL = (username, token) => `${process.env.EMAIL_URL}/reset/${username}/${token}`;
 
-exports.resetPasswordTemplate = (user, url) => {
+exports.emailTemplate = (email, name, url) => {
     const from = process.env.EMAIL_LOGIN;
-    const to = user[0].email;
+    const to = email;
     const subject = '🍞 Breads Password Reset 🍞';
     const html = `
-        <p>Hey ${user[0].first_name || user[0].email},</p>
+        <p>Hey ${name || email},</p>
         <p>We heard that you lost your Breads password. Sorry about that!</p>
         <p>But don’t worry! You can use the following link to reset your password:</p>
         <a href=${url}>${url}</a>
@@ -79,6 +96,7 @@ exports.resetPasswordTemplate = (user, url) => {
 exports.sendEmail = (emailTemplate, next) => {
     transporter.sendMail(emailTemplate, (err, info) => {
         if (err) {
+            console.log('helpers/auth - sendEmail');
             console.log(err);
             return next({
                 status: 500,
@@ -86,7 +104,7 @@ exports.sendEmail = (emailTemplate, next) => {
             });
         }
         console.log(`** Email sent **`, info.response)
-        return res.status(202).json('Reset password email sent')
+        return 'Reset password email sent. Please check your inbox.';
     })
 }
 
