@@ -1,14 +1,13 @@
 const   jwt = require('jsonwebtoken'),
-        bcrypt = require('bcrypt'),
         User = require('../models/user'),
         helpers = require('../helpers/auth');
 
-exports.signup = async function(req, res, next) {
+exports.signup = async (req, res, next) => {
     try {
         const userImage = helpers.getImage();
         const passwordHash = helpers.generateHash(req.body.password);
 
-        const userId = await User.create([
+        const user = await User.create([
             req.body.first_name,
             req.body.last_name,
             req.body.username,
@@ -17,17 +16,10 @@ exports.signup = async function(req, res, next) {
             userImage
         ]);
 
-        const token = jwt.sign(
-            { 
-                id: userId.insertId,
-                username: req.body.username,
-                image: userImage
-            }, 
-            process.env.SECRET_KEY
-        );
+        const token = helpers.createToken(user.insertId, req.body.username, userImage);
         
         return res.status(200).json({ 
-            id: userId.insertId,
+            id: user.insertId,
             username: req.body.username,
             image: userImage,
             token
@@ -46,18 +38,16 @@ exports.signup = async function(req, res, next) {
     }
 }
 
-exports.signin = async function(req, res, next) {
+exports.signin = async (req, res, next) => {
     try {
-        let username = req.body.username,
-            password = req.body.password;
-        let user = await User.findByUsername(username);
-        helpers.comparePassword(password, user[0].password, function(err, isMatch) {
+        const username = req.body.username;
+        const password = req.body.password;
+        const user = await User.findByUsername(username);
+
+        helpers.comparePassword(password, user[0].password, (err, isMatch) => {
             if (isMatch) {
-                let token = jwt.sign({ 
-                    id: user[0].id,
-                    username,
-                    image: user[0].image
-                }, process.env.SECRET_KEY);
+                const token = helpers.createToken(user[0].id, username, user[0].image);
+
                 return res.status(200).json({
                     id: user[0].id,
                     username,
@@ -65,6 +55,8 @@ exports.signin = async function(req, res, next) {
                     token
                 });
             } else {
+                console.log('controllers/auth - signin');
+                console.log(err);
                 return next({
                     status: 400,
                     message: 'Invalid Username/Password.'
@@ -73,6 +65,8 @@ exports.signin = async function(req, res, next) {
         });
     }
     catch (err) {
+        console.log('controllers/auth - signin');
+        console.log(err);
         return next({
             status: 400,
             message: 'Invalid Username/Password.'
@@ -80,51 +74,50 @@ exports.signin = async function(req, res, next) {
     }
 }
 
-//PASSWORD RESET
-
-exports.sendPasswordResetEmail = async (req, res, next) => {
-    const { email } = req.body;
-
+exports.updatePassword = async (req, res, next) => {
     try {
-        const user = await User.findByEmail(email);
-        const token = helpers.usePasswordHashToMakeToken(user);
-        const url = helpers.getPasswordResetURL(user, token);
-        const emailTemplate = helpers.resetPasswordTemplate(user, url);
-        helpers.sendEmail(emailTemplate, next);
-        return res.status(200).json({
-            message: 'Email sent'
-        });
-    } catch (err) {
+        const { username, token } = req.params;
+        const { password } = req.body;
+        const user = await User.findByUsername(username);
+
+        if (helpers.isRealUser(user[0], token)) {
+            const hash = helpers.generateHash(password);
+            await User.findByIdAndUpdatePassword(hash, user[0].id)
+            return res.status(202).json({
+                    message: 'Password changed accepted'
+                });
+        } else {
+            console.log('controllers/auth - signin');
+            console.log(err);
+            return next({
+                status: 400,
+                message: 'Invalid Username/Password.'
+            });
+        }
+    }
+    catch (err) {
+        console.log('controllers/auth - updatePassword');
+        console.log(err);
         return next({
             status: 404,
-            message: 'Error sending email'
+            message: 'Something went wrong'
         });
     }
 }
 
-exports.receiveNewPassword = (req, res, next) => {
-    const { username, token } = req.params;
-    const { password } = req.body;
-
-    User.findByUsername(username)
-        .then(user => {
-            const secret = user[0].password + '-' + user[0].createdAt;
-            const payload = jwt.decode(token, secret);
-            if (payload.id === user[0].id) {
-                let salt = bcrypt.genSaltSync(10),
-                    hash = bcrypt.hashSync(password, salt);
-
-                User.findByIdAndUpdatePassword(hash, user[0].id)
-                    .then(() => res.status(202).json({
-                        message: 'Password changed accepted'
-                    }))
-                    .catch(err => res.status(500).json(err));
-            }
+exports.sendPasswordResetEmail = async (req, res, next) => {
+    try {
+        const user = await User.findByEmail(req.body.email);
+        const token = helpers.getEmailToken(user[0]);
+        const url = helpers.getPasswordResetURL(user[0].username, token);
+        const emailTemplate = helpers.emailTemplate(user[0].email, user[0].firstname, url);
+        const sendEmail = helpers.sendEmail(emailTemplate, next);
+        return res.status(200).json({
+            message: sendEmail
         })
-        .catch(() => {
-            return next({
-                status: 404,
-                message: 'Invalid user'
-            });
+    } catch (err) {
+        return res.status(404).json({
+            message: 'Error sending email'
         });
+    }
 }
