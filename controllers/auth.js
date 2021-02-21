@@ -1,66 +1,41 @@
-let jwt = require('jsonwebtoken'),
-    bcrypt = require('bcrypt'),
-    comparePassword = require('../helpers/auth').comparePassword,
-    User = require('../models/user'),
-    sendEmail = require('../helpers/auth').sendEmail,
-    getPasswordResetURL = require('../helpers/auth').getPasswordResetURL,
-    resetPasswordTemplate = require('../helpers/auth').resetPasswordTemplate,
-    usePasswordHashToMakeToken = require('../helpers/auth').usePasswordHashToMakeToken,
-    cloud = require('../helpers/image'),
-    dataUri = require('../middleware/image').dataUri;
+const   jwt = require('jsonwebtoken'),
+        bcrypt = require('bcrypt'),
+        User = require('../models/user'),
+        helpers = require('../helpers/auth');
 
 exports.signup = async function(req, res, next) {
     try {
-        if (req.file) {
-            const file = dataUri(req).content;
-            cloud.uploads(file)
-            .then(async (result) => {
-                req.body.image = result.url;
+        const userImage = helpers.getImage();
+        const passwordHash = helpers.generateHash(req.body.password);
 
-                let newUser = new User(req.body.first_name, req.body.last_name, req.body.username, req.body.email, req.body.password, req.body.image);
-                let userId = await User.create(newUser);
-                let token = jwt.sign(
-                    { 
-                        id: userId.insertId,
-                        username: newUser.username,
-                        image: newUser.image
-                    }, 
-                    process.env.SECRET_KEY
-                );
-                return res.status(200).json({ 
-                    id: userId.insertId,
-                    username: newUser.username,
-                    image: newUser.image,
-                    token
-                });
-            })
-            .catch(err => {
-                return next(err);
-            })
-        } else {
-                const imageArrayLength = 9; // ../helpers/image.js - setImage()
-                const indexNumber = Math.floor(Math.random() * imageArrayLength);
-                req.body.image = cloud.setImage(indexNumber);
+        const userId = await User.create([
+            req.body.first_name,
+            req.body.last_name,
+            req.body.username,
+            req.body.email,
+            passwordHash,
+            userImage
+        ]);
 
-                let newUser = new User(req.body.first_name, req.body.last_name, req.body.username, req.body.email, req.body.password, req.body.image);
-                let userId = await User.create(newUser);
-                let token = jwt.sign(
-                    { 
-                        id: userId.insertId,
-                        username: newUser.username,
-                        image: newUser.image
-                    }, 
-                    process.env.SECRET_KEY
-                );
-                return res.status(200).json({ 
-                    id: userId.insertId,
-                    username: newUser.username,
-                    image: newUser.image,
-                    token
-                });
-        }
+        const token = jwt.sign(
+            { 
+                id: userId.insertId,
+                username: req.body.username,
+                image: userImage
+            }, 
+            process.env.SECRET_KEY
+        );
+        
+        return res.status(200).json({ 
+            id: userId.insertId,
+            username: req.body.username,
+            image: userImage,
+            token
+        });
     }
     catch (err) {
+        console.log('controllers/auth - signup');
+        console.log(err);
         if (err.code === 'ER_DUP_ENTRY') {
             err.message = 'Sorry, that username and/or email is taken';
         }
@@ -76,7 +51,7 @@ exports.signin = async function(req, res, next) {
         let username = req.body.username,
             password = req.body.password;
         let user = await User.findByUsername(username);
-        comparePassword(password, user[0].password, function(err, isMatch) {
+        helpers.comparePassword(password, user[0].password, function(err, isMatch) {
             if (isMatch) {
                 let token = jwt.sign({ 
                     id: user[0].id,
@@ -112,10 +87,10 @@ exports.sendPasswordResetEmail = async (req, res, next) => {
 
     try {
         const user = await User.findByEmail(email);
-        const token = usePasswordHashToMakeToken(user);
-        const url = getPasswordResetURL(user, token);
-        const emailTemplate = resetPasswordTemplate(user, url);
-        sendEmail(emailTemplate, next);
+        const token = helpers.usePasswordHashToMakeToken(user);
+        const url = helpers.getPasswordResetURL(user, token);
+        const emailTemplate = helpers.resetPasswordTemplate(user, url);
+        helpers.sendEmail(emailTemplate, next);
         return res.status(200).json({
             message: 'Email sent'
         });
