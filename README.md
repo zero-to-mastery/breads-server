@@ -21,9 +21,14 @@ NOTE: In the rest of the documentation, you will come across npm being used for 
 
 ## Running
 
-Make sure the necessary dependencies are installed, add environment variables, and type the command `npm start`
+After installing dependencies and creating a local mySQL database, 
 
-### Environment Variables
+### 1. Import seed data
+
+  - `mysql -u [USERNAME] -p [DATABASE] < mysql/tables.sql` - create tables  
+  - `mysql -u [USERNAME] -p [DATABASE] < mysql/import.sql` - import data
+
+### 2. Add environment variables
 
   - `LOCAL_CORS` - frontend url (i.e. 'http://localhost:3000')
   
@@ -48,6 +53,8 @@ Make sure the necessary dependencies are installed, add environment variables, a
   - `EMAIL_LOGIN` - email address  
   - `EMAIL_PASSWORD` - email password  
   - `EMAIL_URL` - frontend url (i.e 'http://localhost:3000')
+
+### 3. Run `npm start`
   
 ## Testing
 
