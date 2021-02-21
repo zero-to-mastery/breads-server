@@ -102,6 +102,8 @@ def get_title():
             description = reading.opengraph['description']
         if (description == '' and reading.meta_description):
             description = reading.meta_description
+        if (len(description) > 500):
+            description = (description[:497] + '...')
         
         if ('image' in reading.opengraph):
             image = reading.opengraph['image']
