@@ -1,5 +1,6 @@
 let db = require('.'),
-    bcrypt = require('bcrypt');
+    bcrypt = require('bcrypt'),
+    queries = require('../queries/user');
 
 class User {
     constructor(firstName, lastName, username, email, password, image) {
@@ -17,7 +18,7 @@ class User {
         
         user.password = hash;
         let newUser = new Promise((resolve, reject) => {
-            db.connection.query('INSERT INTO users SET ?', user, function (err, results) {
+            db.connection.query(queries.insertUser, user, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -27,7 +28,7 @@ class User {
 
     static findByUsername(username) {
         let user = new Promise((resolve, reject) => {
-            db.connection.query('SELECT * FROM users WHERE username = ?', username, function(err, results) {
+            db.connection.query(queries.selectByUsername, username, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);  
             });
@@ -37,7 +38,7 @@ class User {
     
     static findById(id) {
         let user = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, username, image FROM users WHERE id = ?', id, function(err, results) {
+            db.connection.query(queries.selectById, id, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);  
             });
@@ -47,7 +48,7 @@ class User {
 
     static findByEmail(email) {
         let user = new Promise((resolve, reject) => {
-            db.connection.query('SELECT * FROM users WHERE email = ?', email, function(err, results) {
+            db.connection.query(queries.selectByEmail, email, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);  
             });
@@ -57,7 +58,7 @@ class User {
     
     static delete(username) {
         let user = new Promise((resolve, reject) => {
-            db.connection.query('DELETE FROM users WHERE username = ?', username, function(err, results) {
+            db.connection.query(queries.deleteUser, username, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -67,7 +68,7 @@ class User {
 
     static findAll() {
         let users = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, first_name, last_name, username, image FROM users ORDER BY id DESC', function(err, results) {
+            db.connection.query(queries.selectAllUsers, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -77,7 +78,7 @@ class User {
     
     static findSubscriptionsById(sub_id) {
         let following = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, username, image FROM subscriptions LEFT JOIN users ON publisher_id = users.id WHERE subscriber_id = ? ORDER BY id DESC', sub_id, function(err, results) {
+            db.connection.query(queries.selectUserSubscriptions, sub_id, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -87,7 +88,7 @@ class User {
 
     static findFollowersById(id) {
         let followers = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, username, image FROM subscriptions LEFT JOIN users ON subscriber_id = users.id WHERE publisher_id = ? ORDER BY id DESC', id, function(err, results) {
+            db.connection.query(queries.selectUserSubscribers, id, (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -97,7 +98,7 @@ class User {
 
     static findBySearch(string) {
         let result = new Promise((resolve, reject) => {
-            db.connection.query('SELECT id, first_name, last_name, username, image, MATCH (first_name, last_name, username) AGAINST (?) as score FROM users WHERE MATCH (first_name, last_name, username) AGAINST (?) > 0 ORDER BY score DESC', [string, string], function(err, results) {
+            db.connection.query(queries.searchUsers, [string, string], (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -107,7 +108,7 @@ class User {
     
     static findByIdAndUpdate(id, image, username) {
         let updatedUser = new Promise((resolve, reject) => {
-            db.connection.query('UPDATE users SET image = ?, username = ? WHERE id = ?', [image, username, id], function(err, results) {
+            db.connection.query(queries.updateUser, [image, username, id], (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -117,7 +118,7 @@ class User {
 
     static findByIdAndUpdatePassword(password, id) {
         let updatedUser = new Promise((resolve, reject) => {
-            db.connection.query('UPDATE users SET password = ? WHERE id = ?', [password, id], function(err, results) {
+            db.connection.query(queries.updateUserPassword, [password, id], (err, results) => {
                 if (err) reject(err);
                 else resolve(results);
             });
@@ -127,7 +128,7 @@ class User {
 
     static findFavorites(id) {
         let favorites = new Promise((resolve, reject) => {
-            db.connection.query('SELECT reading_id, user_id FROM favorites WHERE user_id = ?', id, function(err, results) {
+            db.connection.query(queries.selectUserFavorites, id, (err, results) => {
                 if (err) reject(err);
                 else resolve(results)
             });
