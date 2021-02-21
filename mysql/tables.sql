@@ -1,23 +1,10 @@
-ALTER TABLE reading_tags DROP FOREIGN KEY reading_tags_ibfk_1;
-ALTER TABLE reading_tags DROP FOREIGN KEY reading_tags_ibfk_2;
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS reading_tags;
-
-ALTER TABLE favorites DROP FOREIGN KEY favorites_ibfk_1;
-ALTER TABLE favorites DROP FOREIGN KEY favorites_ibfk_2;
 DROP TABLE IF EXISTS favorites;
-
-ALTER TABLE subscriptions DROP FOREIGN KEY subscriptions_ibfk_1;
-ALTER TABLE subscriptions DROP FOREIGN KEY subscriptions_ibfk_2;
 DROP TABLE IF EXISTS subscriptions;
-
-ALTER TABLE user_readings DROP FOREIGN KEY user_readings_ibfk_1;
-ALTER TABLE user_readings DROP FOREIGN KEY user_readings_ibfk_2;
 DROP TABLE IF EXISTS user_readings;
-
-ALTER TABLE user_tags DROP FOREIGN KEY user_tags_ibfk_1;
-ALTER TABLE user_tags DROP FOREIGN KEY user_tags_ibfk_2;
 DROP TABLE IF EXISTS user_tags;
-
 DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS readings;
 DROP TABLE IF EXISTS users;
