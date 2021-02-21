@@ -1,5 +1,7 @@
 require('dotenv').config();
-let jwt = require('jsonwebtoken');
+const   jwt = require('jsonwebtoken'),
+        multer = require('multer'),
+        cloudinary = require('cloudinary').v2;
 
 exports.loginRequired = function(req, res, next){
     try {
@@ -37,4 +39,25 @@ exports.ensureCorrectUser = function(req, res, next) {
             message: 'Unauthorized'
         });
     }
+}
+
+const storage = multer.memoryStorage();
+
+const imageFilter = (req, file, cb) => {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+
+exports.handleFormData = multer({ storage, fileFilter: imageFilter });
+
+exports.cloudinaryConfig = (req, res, next) => {
+    cloudinary.config({
+        cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: process.env.CLOUDINARY_API_KEY,
+        api_secret: process.env.CLOUDINARY_API_SECRET,
+    });
+    next();
 }
