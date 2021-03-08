@@ -94,7 +94,7 @@ exports.selectSubscriptionReadings = `
         favorites.user_id as favorite,
         GROUP_CONCAT(reading_tags.tag_id) as tag_ids
     FROM subscriptions
-    LEFT JOIN user_readings ON user_readings.user_id = publisher_id
+    INNER JOIN user_readings ON user_readings.user_id = publisher_id
     LEFT JOIN readings ON readings.id = user_readings.reading_id
     LEFT JOIN users ON users.id = user_readings.user_id
     LEFT JOIN favorites ON favorites.reading_id = user_readings.reading_id
