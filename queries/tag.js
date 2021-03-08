@@ -47,7 +47,7 @@ exports.selectSubscriptionTags = `
         tags.created_at as date,
         count
     FROM subscriptions
-    LEFT JOIN user_tags ON user_tags.user_id = publisher_id
+    INNER JOIN user_tags ON user_tags.user_id = publisher_id
     LEFT JOIN tags ON tags.id = user_tags.tag_id
     WHERE subscriber_id = ?
     GROUP BY
