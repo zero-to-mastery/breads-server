@@ -59,7 +59,8 @@ exports.findSubscriptionTags = async (req, res, next) => {
     try {
         let userTags = await Tags.findSubscriptionTags(req.params.id);
         let tags = userTags.map(tag => {
-            return tag = {
+            console.log(tag.user_id);
+            const tags = {
                 'id': tag.id,
                 'tag_name': tag.tag_name,
                 // 'reading_id': tag.reading_id.split(','),
@@ -67,6 +68,8 @@ exports.findSubscriptionTags = async (req, res, next) => {
                 'date': tag.date,
                 'count': tag.count
             }
+            console.log(tags);
+            return tags;
         });
         return res.status(200).json(tags);
     }
