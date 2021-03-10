@@ -24,6 +24,9 @@ NOTE: In the rest of the documentation, you will come across npm being used for 
 
 - Install the dependencies with `yarn` or `npm install`
 - Create a local mySQL database.
+
+  **For Windows:**
+
   If you are installing mySQL for the first time follow the following steps.
 
   - Download mySQL `mysql-installer-community-8.0.23.0.msi` from [here](https://dev.mysql.com/downloads/windows/installer/8.0.html).
@@ -36,6 +39,7 @@ NOTE: In the rest of the documentation, you will come across npm being used for 
     ![Image](./asset/Picture1.png)
 
     ![Image](./asset/Picture2.png)
+
     and then click on Next.
 
   - Click on next till you reach Authentication Method, in Authentication Method choose
