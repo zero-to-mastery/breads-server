@@ -1,4 +1,4 @@
-# Contributing to Github Readme Activity Graph
+# Contributing to Breads Server
 
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
@@ -26,11 +26,9 @@ Our aim is to **keep it simple** for the developers to contribute to this projec
 
 4. Create a branch `git checkout -b <your_branch_name>`.
 
-5. Setup MySQL on your local machine
-
 <details>
-<summary>Setup MySQL for Windows</summary>
-<br></br>
+<summary>5. Setup MySQL on your local machine</summary>
+
 Create a local mySQL database.
 
 **For Windows:**
@@ -58,7 +56,7 @@ and then click on Next.
 
 </details>
 
-6. Import seed data (Before this step database must be created see **step 5 last point**)
+1. Import seed data (Before this step database must be created see **step 5 last point**)
 
     - From Shell
 
@@ -69,7 +67,7 @@ and then click on Next.
         - copy the entire file `tables.sql` and execute ⚡ the command at once.
         - copy the entire file `import.sql` and execute ⚡ the command at once.
 
-7. Create a file `.env` in the root directory:
+2. Create a file `.env` in the root directory:
 
     - `LOCAL_CORS` - frontend url (i.e. 'http://localhost:3000')
 
@@ -120,7 +118,7 @@ and then click on Next.
         LOCAL_CORS=http://localhost:3000
         ```
 
-8. Install the necessary dependencies using [npm](https://docs.npmjs.com/about-npm/) or [yarn](https://yarnpkg.com/getting-started).
+3. Install the necessary dependencies using [npm](https://docs.npmjs.com/about-npm/) or [yarn](https://yarnpkg.com/getting-started).
 
     To install the packages through npm, run the command `npm install`
 
@@ -128,15 +126,15 @@ and then click on Next.
 
     NOTE: In the rest of the documentation, you will come across npm being used for running commands. To use yarn in place of npm for the commands, simply substitute npm for yarn. Example, `npm start` as `yarn start`. For more help, checkout [migrating from npm](https://classic.yarnpkg.com/en/docs/migrating-from-npm/).
 
-9. Run `npm install`
+4. Run `npm install`
 
-10. Start making your changes.
+5. Start making your changes.
 
-11. Get a screenshot of your finished work! (if there are any UI changes) Try to crop it so that it looks good as a smallish (preferably squarish) image.
+6. Get a screenshot of your finished work! (if there are any UI changes) Try to crop it so that it looks good as a smallish (preferably squarish) image.
 
-12. Pull from the upstream again before you commit your changes, like you did in step 3. This is to ensure your still have the latest code.
+7. Pull from the upstream again before you commit your changes, like you did in step 3. This is to ensure your still have the latest code.
 
-13. If you see a error like
+8. If you see a error like
 
 ```md
 Your local changes to the following files would be overwritten by merge. Please commit your changes or stash them before you merge
@@ -150,9 +148,9 @@ on using `git pull upstream main` use:
 
     for more info on this [visit](https://bluecast.tech/blog/git-stash/)
 
-11. Commit and push the code to your fork
+14. Commit and push the code to your fork
 
-12. Create a pull request to have the changes merged from your fork into the origin.
+15. Create a pull request to have the changes merged from your fork into the origin.
 
 ### Folder Structure
 
