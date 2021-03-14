@@ -56,7 +56,7 @@ and then click on Next.
 
 </details>
 
-1. Import seed data (Before this step database must be created see **step 5 last point**)
+6. Import seed data (Before this step database must be created see **step 5 last point**)
 
     - From Shell
 
@@ -67,7 +67,7 @@ and then click on Next.
         - copy the entire file `tables.sql` and execute ⚡ the command at once.
         - copy the entire file `import.sql` and execute ⚡ the command at once.
 
-2. Create a file `.env` in the root directory:
+7. Create a file `.env` in the root directory:
 
     - `LOCAL_CORS` - frontend url (i.e. 'http://localhost:3000')
 
@@ -100,7 +100,7 @@ and then click on Next.
     - At the end `.env` file will look like this:
 
         ```md
-        PORT=3030
+        PORT=<CUSTOM_PORT_NUMBER>
 
         LOCAL_HOST=localhost
         LOCAL_USER=<YOUR_MYSQL_USERNAME>
@@ -118,7 +118,7 @@ and then click on Next.
         LOCAL_CORS=http://localhost:3000
         ```
 
-3. Install the necessary dependencies using [npm](https://docs.npmjs.com/about-npm/) or [yarn](https://yarnpkg.com/getting-started).
+8. Install the necessary dependencies using [npm](https://docs.npmjs.com/about-npm/) or [yarn](https://yarnpkg.com/getting-started).
 
     To install the packages through npm, run the command `npm install`
 
@@ -126,15 +126,15 @@ and then click on Next.
 
     NOTE: In the rest of the documentation, you will come across npm being used for running commands. To use yarn in place of npm for the commands, simply substitute npm for yarn. Example, `npm start` as `yarn start`. For more help, checkout [migrating from npm](https://classic.yarnpkg.com/en/docs/migrating-from-npm/).
 
-4. Run `npm install`
+9. Run `npm install`
 
-5. Start making your changes.
+10. Start making your changes.
 
-6. Get a screenshot of your finished work! (if there are any UI changes) Try to crop it so that it looks good as a smallish (preferably squarish) image.
+11. Get a screenshot of your finished work! (if there are any UI changes) Try to crop it so that it looks good as a smallish (preferably squarish) image.
 
-7. Pull from the upstream again before you commit your changes, like you did in step 3. This is to ensure your still have the latest code.
+12. Pull from the upstream again before you commit your changes, like you did in step 3. This is to ensure your still have the latest code.
 
-8. If you see a error like
+13. If you see a error like
 
 ```md
 Your local changes to the following files would be overwritten by merge. Please commit your changes or stash them before you merge
@@ -153,6 +153,30 @@ on using `git pull upstream main` use:
 15. Create a pull request to have the changes merged from your fork into the origin.
 
 ### Folder Structure
+
+## Deploying
+
+If you want to deploy your own instance follow the steps mentioned below.
+
+1. [Keep your fork in sync](https://www.freecodecamp.org/news/how-to-sync-your-fork-with-the-original-git-repository/) with this repository ([how to merge conflicts](https://opensource.com/article/20/4/git-merge-conflict)):
+
+```
+# Add a new remote upstream repository
+git remote add upstream https://github.com/zero-to-mastery/breads-server.git
+
+# Sync your fork
+git fetch upstream
+git checkout master
+git merge upstream/master
+```
+
+2. Push changes to your repo:
+
+`git push origin master`
+
+3. In your repo GitHub page, create a pull request to the `development` branch. This will allow us to see changes in a staging environment before merging to `master`.
+
+4. If everything runs correctly, your pull request will be merged into `master`.
 
 ## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
 
