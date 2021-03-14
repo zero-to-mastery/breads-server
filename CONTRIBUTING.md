@@ -178,6 +178,10 @@ git merge upstream/master
 
 4. If everything runs correctly, your pull request will be merged into `master`.
 
+## This project uses the Creative Commons Attribution 4.0 International License
+
+When you submit code changes, your submissions are understood to be under the same CC License that covers the project. Feel free to contact the maintainers if that's a concern.
+
 ## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
 
 Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
@@ -215,7 +219,3 @@ People _love_ thorough bug reports. I'm not even kidding.
 
 Observe the coding style of the project and add your code also in the same style.
 **Don't make major changes** (Like changing the complete folder structure)
-
-## License
-
-By contributing, you agree that your contributions will be licensed under its MIT License.
