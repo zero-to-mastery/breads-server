@@ -39,7 +39,10 @@ app.use(morgan('combined'));
 const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herokuapp.com', 'https://jw00ds.github.io', process.env.LOCAL_CORS];
 const corsOptions = {
     origin: function (origin, callback) {
-        if (whitelist.indexOf(origin) !== -1) {
+        const isWhiteListed = whitelist.indexOf(origin) !== -1;
+        const isLocal = process.env.LOCAL_CORS === 'localhost:8080' && !origin;
+        
+        if (isWhiteListed || isLocal) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
