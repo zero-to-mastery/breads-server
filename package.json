@@ -1,10 +1,7 @@
 {
   "name": "breads",
   "version": "1.0.0",
-<<<<<<< HEAD
-=======
   "private": "true",
->>>>>>> upstream/master
   "description": "",
   "engines": {
     "node": "11.15.x"
