@@ -40,7 +40,7 @@ const whitelist = ['https://www.breads.io', 'https://staging-breads-client.herok
 const corsOptions = {
     origin: function (origin, callback) {
         const isWhiteListed = whitelist.indexOf(origin) !== -1;
-        const isLocal = process.env.LOCAL_CORS === 'localhost:8080' && !origin;
+        const isLocal = process.env.LOCAL_CORS === `localhost:${PORT}` && !origin;
         
         if (isWhiteListed || isLocal) {
             callback(null, true);
