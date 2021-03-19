@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from fake_useragent import UserAgent, FakeUserAgentError
 from goose3 import Goose
 
+from auto_browser import auto_browser
+
 load_dotenv()
 
 # BASE_URL = 'https://daedtech.com/5-things-ive-learned-in-20-years-of-programming/'
@@ -193,22 +195,29 @@ def get_word_count():
         word_count = 0
     # print(word_count)
 
-BASE_URL = sys.argv[1]
+BASE_URL = transform_url(sys.argv[1])
 
-url = transform_url(BASE_URL)
+CACHED = 'https://webcache.googleusercontent.com/search?q=cache:' + BASE_URL
 
-CACHED = 'https://webcache.googleusercontent.com/search?q=cache:' + url
-
-check = check_if_pdf(url)
+check = check_if_pdf(BASE_URL)
 
 if check:
     # send to scraper, and let that script create values array
     sys.exit()
 
-get_reading_data(url, CACHED)
+get_reading_data(BASE_URL, CACHED)
 get_title()
-get_domain(url)
+get_domain(BASE_URL)
 get_word_count()
+
+if ('Unable to get title of article' in title
+    or 'Bloomberg - Are you a robot?' in title
+    or "Access Denied" in title
+    or "Error" in title
+    or "ERROR" in title):
+        # retry these from the webdriver
+        auto_browser(BASE_URL)
+        sys.exit()
 
 values = [
     title, 
@@ -216,7 +225,7 @@ values = [
     description,
     image,
     word_count, 
-    url
+    BASE_URL
 ]
 
 # print(values)
