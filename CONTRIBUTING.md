@@ -118,6 +118,8 @@ and then click on Next.
         LOCAL_CORS=http://localhost:3000
         ```
 
+    **Set up Back end without the Front end** - set the `LOCAL_CORS` .env variable to `localhost:8080` (or whatever your local nodejs port is set to run from). Don't use `http://` in front, as you normally would in the above instructions. The main page may give you this `{"error":{"message":"Not Found"}}` error but the API endpoints will still work.
+
 8. Install the necessary dependencies using [npm](https://docs.npmjs.com/about-npm/) or [yarn](https://yarnpkg.com/getting-started).
 
     To install the packages through npm, run the command `npm install`
