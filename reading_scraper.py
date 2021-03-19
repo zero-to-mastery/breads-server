@@ -215,7 +215,8 @@ if ('Unable to get title of article' in title
     or "Access Denied" in title
     or "Error" in title
     or "ERROR" in title):
-        # retry these from the webdriver
+        # retry these from the webdriver,
+        # which dumps the values array instead
         auto_browser(BASE_URL)
         sys.exit()
 

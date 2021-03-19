@@ -1,7 +1,6 @@
 import requests, re, sys, json, os, time
 from urllib.parse import unquote
 
-from lxml.html.clean import Cleaner
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from splinter import Browser
