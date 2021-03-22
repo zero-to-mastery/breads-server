@@ -15,11 +15,7 @@ INSERT INTO users (
 ('Fifth','User','fifth@user.com','fifthUser','$2b$10$6Hlgf70PI6lZT5ZP7RRNQuLfRcG3wx.PsAcOu983TgFEp/bhDYKwa','https://res.cloudinary.com/breads/image/upload/v1613539580/tortilla_fvnmgn.jpg','2020-03-27 11:46:36');
 
 -- READINGS
-<<<<<<< HEAD
-INSERT INTO READINGS (
-=======
 INSERT INTO readings (
->>>>>>> upstream/master
     title,
     domain,
     description,

@@ -63,26 +63,30 @@ def check_if_pdf(url):
     else:
         return False
 
+def build_headers():
+    headers = {
+        'Accept': '*/*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Cache-Control': 'no-cache',
+        'DNT': '1',
+        'Pragma': 'no-cache',
+        'Referer': "https://www.google.com/search",
+        'User-Agent': useragent_generator(),
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'cross-site',
+        'Upgrade-Insecure-Requests': '1',
+    }
+
+    return headers
+
 def get_reading_data(url, cached_url):
     global reading, title, description, image
 
-    full_headers = {
-    'Accept': '*/*',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-    'Cache-Control': 'no-cache',
-    'DNT': '1',
-    'Pragma': 'no-cache',
-    'Referer': "https://www.google.com/search",
-    'User-Agent': useragent_generator(),
-    'Sec-Fetch-Dest': 'document',
-    'Sec-Fetch-Mode': 'navigate',
-    'Sec-Fetch-Site': 'cross-site',
-    'Upgrade-Insecure-Requests': '1',
-    }
+    full_headers = build_headers()
 
-    
     g = Goose({'http_headers': full_headers})
     # g = Goose({'browser_user_agent': useragent_generator()})
     # extract info with goose
@@ -95,25 +99,9 @@ def get_reading_data(url, cached_url):
     # if domain is 'special' or if title is blank, try cached version
     if (reading == '' or reading.title == '' 
         or '403 Forbidden' in reading.title
-        or "Bloomberg" in reading.title): 
+        or reading.title == "Bloomberg"): 
         # or any(domain in url for domain in special_sites)):
         print('needing to cache')
-        # update header to refer from google
-        full_headers = {
-            'Accept': '*/*',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Cache-Control': 'no-cache',
-            'DNT': '1',
-            'Pragma': 'no-cache',
-            'Referer': 'https://www.google.com/',
-            'User-Agent': useragent_generator(),
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'cross-site',
-            'Upgrade-Insecure-Requests': '1',
-        }
         try:
             reading = g.extract(url=cached_url)
         except:
@@ -125,7 +113,7 @@ def get_reading_data(url, cached_url):
     if ('Not Found' in reading.title 
         or str(reading.title).startswith("https:///search?q=cache:")
         or '404' in reading.title
-        or "Bloomberg" in reading.title
+        or reading.title == "Bloomberg"
         or reading == ''):
         print('using link preview')
         r = requests.get(f'http://api.linkpreview.net/?key={link_preview}&q={url}')
