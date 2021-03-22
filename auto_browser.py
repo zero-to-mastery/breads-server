@@ -29,7 +29,7 @@ def get_domain(url):
         domain = domain.group()
     except:
         domain = 'Unable to get domain'
-        print("Error occurred with getting domain: ", sys.exc_info())
+        # print("Error occurred with getting domain: ", sys.exc_info())
     # print(domain)
     res = domain
     return res
@@ -63,7 +63,7 @@ def auto_browser(url):
     try:
         browser.visit(url)
     except:
-        print("Error occurred visiting url: ", sys.exc_info())
+        # print("Error occurred visiting url: ", sys.exc_info())
         title = ''
         description = ''
         image = ''
@@ -84,7 +84,7 @@ def auto_browser(url):
             word_count = 0
             return
     except:
-        print("Error occurred looking for captcha: ", sys.exc_info())
+        # print("Error occurred looking for captcha: ", sys.exc_info())
         pass
     
     # scroll through page with random intervals to trigger any lazy loading
@@ -94,7 +94,7 @@ def auto_browser(url):
         browser.execute_script("var main = document.querySelector('#main'); if(main){main.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})};")
         browser.execute_script("var main = document.querySelector('.main'); if(main){main.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})};")
     except:
-        print("Error occurred triggering lazy loading: ", sys.exc_info())
+        # print("Error occurred triggering lazy loading: ", sys.exc_info())
         pass
     
     time.sleep(random()+random()*10+2)
@@ -104,7 +104,7 @@ def auto_browser(url):
         browser.execute_script("var footer = document.querySelector('#footer'); if(footer){footer.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
         browser.execute_script("var footer = document.querySelector('.footer'); if(footer){footer.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
     except:
-        print("Error occurred triggering lazy loading: ", sys.exc_info())
+        # print("Error occurred triggering lazy loading: ", sys.exc_info())
         pass
     
     time.sleep(random()+random()*10+2)
@@ -113,7 +113,7 @@ def auto_browser(url):
         browser.execute_script("var header = document.querySelector('#header'); if(header){header.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
         browser.execute_script("var header = document.querySelector('.header'); if(header){header.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
     except:
-        print("Error occurred triggering lazy loading: ", sys.exc_info())
+        # print("Error occurred triggering lazy loading: ", sys.exc_info())
         pass
     time.sleep(random()+random()*10+2)
 
@@ -146,7 +146,7 @@ def auto_browser(url):
             description_tag = soup.find("meta", attr={"name":"description"})
             description = description_tag['content']
     except:
-        print("can't find description")
+        # print("can't find description")
         description = ''
 
     # get image
@@ -154,7 +154,7 @@ def auto_browser(url):
         image_tag = soup.find("meta", property="og:image")
         image = image_tag['content']
         if not image:
-            print("no og tag for image")
+            # print("no og tag for image")
             try:
                 image_tag = soup.find("img").get('src')
                 image = image_tag
