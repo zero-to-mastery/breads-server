@@ -110,7 +110,12 @@ and then click on Next.
     - `EMAIL_LOGIN` - email address
     - `EMAIL_PASSWORD` - email password
     - `EMAIL_URL` - frontend url (i.e 'http://localhost:3000')
-    - At the end `.env` file will look like this:
+    
+    **Chrome Webdriver** - Used as a fallback to get reading data when the initial scrape fails. [Instructions to download here.](https://splinter.readthedocs.io/en/latest/drivers/chrome.html)
+
+    - `CHROMEDRIVER_DIR` - Place in the directory of the script and then copy the relative path and paste it here. If it's in a different directory, you'll need the complete path.
+    
+    At the end `.env` file will look like this:
 
         ```md
         PORT=<CUSTOM_PORT_NUMBER>
@@ -127,6 +132,8 @@ and then click on Next.
         SECRET_KEY=thisisasecretkey
 
         LINK_PREVIEW_KEY=<YOUR_CLOUDINARY_CLOUD_NAME>
+
+        CHROMEDRIVER_DIR=<PATH_TO_WEBDRIVER>
 
         LOCAL_CORS=http://localhost:3000
         ```
