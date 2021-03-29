@@ -18,11 +18,15 @@ class Reading {
         let options = { args: [url, user_id] };
         let parseReading = await new Promise((resolve, reject) => {
             PythonShell.run('reading_scraper.py', options, (err, data) =>{
-                if (err) reject(err);
+                if (err) {
+                    // console.log(err)
+                    reject(err)
+                };
+                // console.log(data)
                 return resolve(data);
             });
         })
-
+        // console.log(parseReading)
         const values = JSON.parse(parseReading[0]);
         const insertReading = await new Promise((resolve, reject) => {
             db.connection.query(queries.insertReading, [[values]], (err, results) => {
