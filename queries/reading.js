@@ -3,7 +3,10 @@ exports.insertUserReading = `INSERT INTO user_readings (user_id, reading_id) VAL
 exports.selectReadingById = `SELECT * FROM readings WHERE id = ?`;
 exports.updateFavorite = `INSERT INTO favorites (user_id, reading_id) VALUES (?, ?)`;
 exports.deleteFavorite = `DELETE FROM favorites WHERE user_id = ? AND reading_id = ?`;
-exports.deleteReading = `DELETE FROM user_readings WHERE user_id = ? AND reading_id = ?`;
+exports.deleteReading = `DELETE ur, f, rt FROM user_readings ur 
+LEFT JOIN favorites f ON f.reading_id = ur.reading_id AND f.user_id = ur.user_id 
+LEFT JOIN reading_tags rt ON rt.reading_id = ur.reading_ID 
+WHERE ur.user_id = ? AND ur.reading_id = ?`;
 exports.updateReading = `UPDATE readings SET ? WHERE id = ?`;
 exports.selectReadingIdByUrl = `SELECT id FROM readings WHERE url = ?`;
 
