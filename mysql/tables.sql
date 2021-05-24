@@ -104,7 +104,7 @@ CREATE TABLE user_tags (
 
 -- Alter database for new tables
 ALTER DATABASE
-    bread_server
+    process.env.LOCAL_DB
     CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_unicode_ci;
 
