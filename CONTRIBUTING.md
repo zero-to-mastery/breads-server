@@ -14,77 +14,54 @@ Our aim is to **keep it simple** for the developers to contribute to this projec
 
 ## How to contribute
 
-1. First up you need to fork (make a copy) of this repo to your Github account.
+1. First, fork (make a copy) of this repo to your Github account.
 
 2. Clone (download) your fork to your computer
 
-3. Set your streams so that you can sync your clone with the original repo (get the latest updates)
+3. Keep your clone in sync with the original repo (get the latest updates)
 
-    - `git remote add upstream https://github.com/zero-to-mastery/breads-server.git`
-    - `git pull upstream master`
-    - The above 2 commands will synchronize your forked version of the project with the actual repository.
+    HTTPS
+    ```
+    git remote add upstream https://github.com/zero-to-mastery/breads-server.git
+    git pull upstream master
+    ```
 
-4. Create a branch `git checkout -b <your_branch_name>`.
+    SSH
+    ```
+    git remote add upstream git@github.com:zero-to-mastery/breads-server.git
+    git pull upstream master
+    ```
+    ([For more info](https://www.freecodecamp.org/news/how-to-sync-your-fork-with-the-original-git-repository/))   
 
-<details>
-<summary>5. Setup MySQL on your local machine</summary>
+4. Download and install the latest version of [MySQL](https://dev.mysql.com/downloads/mysql/)
+    **on macOS, run the following command to be able to use the `mysql` cli tool  
+    `export PATH=${PATH}:/usr/local/mysql/bin/`  
 
-Create a local mySQL database.
+5. Create your local database
 
-**For Windows:**
+    `Mysql -u root -p` and enter password you set during installation  
+    `CREATE DATABASE breads`
 
-If you are installing mySQL for the first time follow the following steps.
+6. Create database tables and import seed data
 
--   Download mySQL `mysql-installer-community-8.0.23.0.msi` from [here](https://dev.mysql.com/downloads/windows/installer/8.0.html).
+    - Run `mysql -u <YOUR USERNAME> -p <YOUR DATABASE NAME> < mysql/tables.sql` to create tables
+    - Run `mysql -u <YOUR USERNAME> -p <YOUR DATABASE NAME> < mysql/import.sql` to import seed data
 
-![Image](./asset/Picture3.png)
+7. Install Node.js and Python packages
 
--   Open the installer, agree with the licence and choose custom installer option and press next.
--   Select Product and Features
+    - Run `npm install`
+    - Run `python3 -m pip install cython`
+    - Run `python3 -m pip install -r requirements.txt`
 
-![Image](./asset/Picture1.png)
+8. Set up your local environment variables
 
-![Image](./asset/Picture2.png)
-
-and then click on Next.
-
--   Click on next till you reach Authentication Method, in Authentication Method choose
-    `Use Legacy Authentication Method`
--   Set password for the root. And click on Next till the installation will finish.
-
--   Now open the MySQL Workbench and create a database with `CREATE DATABASE bread_server` and use it with `USE bread_server`
-
-**For Mac:**
-
--   Depending on your macOS version, you might need to download an older version (8.0.21) from [here](https://downloads.mysql.com/archives/). Download both Community Server and mySQL WorkBench. Note: 8.0.23 does not work on Big Sur.
-
--   Open the installer, agree with the license and choose standard install option and press next.
-
--   Click on next till you reach Authentication Method, in Authentication Method choose
-    `Use Legacy Authentication Method`
-
--   Set password for the root. And click on Next till the installation will finish.
-
--   Now open the MySQL Workbench and create a database with `CREATE DATABASE bread_server` and use it with `USE bread_server`
-
-</details>
-
-6. Import seed data (Before this step database must be created see **step 5 last point**)
-
-    - From Shell
-
-        - `mysql -u [USERNAME] -p [DATABASE] < mysql/tables.sql` - create tables
-        - `mysql -u [USERNAME] -p [DATABASE] < mysql/import.sql` - import data
-
-    - From Workbench
-        - copy the entire file `tables.sql` and execute ⚡ the command at once.
-        - copy the entire file `import.sql` and execute ⚡ the command at once.
-
-7. Create a file `.env` in the root directory:
+    Create a `.env` file in the root directory:
 
     - `LOCAL_CORS` - frontend url (i.e. 'http://localhost:3000')
 
-        **MySQL**
+    **To make requests from tools like Postman, set `LOCAL_CORS=localhost:8080` (8080 is the default port)
+
+    **MySQL**
 
     - `LOCAL_HOST` - local MySQL hostname
     - `LOCAL_USER` - local MySQL username
@@ -111,109 +88,52 @@ and then click on Next.
     - `EMAIL_PASSWORD` - email password
     - `EMAIL_URL` - frontend url (i.e 'http://localhost:3000')
     
-    **Chrome Webdriver** - Used as a fallback to get reading data when the initial scrape fails. [Instructions to download here.](https://splinter.readthedocs.io/en/latest/drivers/chrome.html)
+    **Chrome Webdriver** - Used as a fallback to get reading data when the initial scrape fails. [Instructions to download here.](https://splinter.readthedocs.io/en/latest/drivers/chrome.html) _(only needed if working on webscraper)_
 
     - `CHROMEDRIVER_DIR` - Place in the directory of the script and then copy the relative path and paste it here. If it's in a different directory, you'll need the complete path.
     
     At the end `.env` file will look like this:
 
-        ```md
-        PORT=<CUSTOM_PORT_NUMBER>
-
-        LOCAL_HOST=localhost
-        LOCAL_USER=<YOUR_MYSQL_USERNAME>
-        LOCAL_DBPASSWORD=<YOUR_MYSQL_PASSWORD>
-        LOCAL_DB=bread_server
-
-        CLOUDINARY_CLOUD_NAME=<YOUR_CLOUDINARY_CLOUD_NAME>
-        CLOUDINARY_API_KEY=<YOUR_CLOUDINARY_API_KEY>
-        CLOUDINARY_API_SECRET=<YOUR_CLOUDINARY_API_SECRET>
-
-        SECRET_KEY=thisisasecretkey
-
-        LINK_PREVIEW_KEY=<YOUR_CLOUDINARY_CLOUD_NAME>
-
-        CHROMEDRIVER_DIR=<PATH_TO_WEBDRIVER>
-
-        LOCAL_CORS=http://localhost:3000
         ```
+        LOCAL_CORS=<FRONTEND URL>
+        LOCAL_HOST=localhost
+        LOCAL_USER=<YOUR MYSQL USERNAME>
+        LOCAL_DBPASSWORD=<YOUR MYSQL PASSWORD>
+        LOCAL_DB=<YOUR DB NAME>
+        CLOUDINARY_CLOUD_NAME=<YOUR CLOUDINARY CLOUD NAME>
+        CLOUDINARY_API_KEY=<YOUR CLOUDINARY API KEY>
+        CLOUDINARY_API_SECRET=<YOUR CLOUDINARY API SECRET>
+        SECRET_KEY=<YOUR SECRET STRING>
+        LINK_PREVIEW_KEY=<YOUR CLOUDINARY CLOUD NAME>
+        CHROMEDRIVER_DIR=<PATH TO WEBDRIVER>
+        ```
+9. Run `npm start` and confirm the server is running 
 
-    **Set up Back end without the Front end** - set the `LOCAL_CORS` .env variable to `localhost:8080` (or whatever your local nodejs port is set to run from). Don't use `http://` in front, as you normally would in the above instructions. The main page may give you this `{"error":{"message":"Not Found"}}` error but the API endpoints will still work.
+10. Create a new branch `git checkout -b <your_branch_name>`.
 
-8. Install the necessary dependencies using [npm](https://docs.npmjs.com/about-npm/) or [yarn](https://yarnpkg.com/getting-started).
-
-    To install the packages through npm, run the command `npm install`
-
-    To install the packages through yarn, run the command `yarn add`
-
-    NOTE: In the rest of the documentation, you will come across npm being used for running commands. To use yarn in place of npm for the commands, simply substitute npm for yarn. Example, `npm start` as `yarn start`. For more help, checkout [migrating from npm](https://classic.yarnpkg.com/en/docs/migrating-from-npm/).
-
-9. Run `npm install`
-
-10. Start making your changes.
-
-11. Get a screenshot of your finished work! (if there are any UI changes) Try to crop it so that it looks good as a smallish (preferably squarish) image.
+11. Start making your changes.
 
 12. Pull from the upstream again before you commit your changes, like you did in step 3. This is to ensure your still have the latest code.
 
-13. If you see a error like
+If you see an error similar to `Your local changes to the following files would be overwritten by merge. Please commit your changes or stash them before you merge` on using `git pull upstream master` use:
 
-```md
-Your local changes to the following files would be overwritten by merge. Please commit your changes or stash them before you merge
-```
+    ```
+    git stash
+    git pull upstream master
+    git stash pop
+    ```
 
-on using `git pull upstream main` use:
+([For more info](https://bluecast.tech/blog/git-stash/))
 
--   `git stash`
--   `git pull upstream main`
--   `git stash pop`
+13. Commit and push the code to your fork
 
-    for more info on this [visit](https://bluecast.tech/blog/git-stash/)
+14. In your repo GitHub page, create a pull request to the `development` branch. This will allow us to see changes in a staging environment before merging to `master`. If everything runs correctly, your pull request will be merged into `master`.
 
-14. Commit and push the code to your fork
-
-15. Create a pull request to have the changes merged from your fork into the origin.
-
-### Folder Structure
-
-## Deploying
-
-If you want to deploy your own instance follow the steps mentioned below.
-
-1. [Keep your fork in sync](https://www.freecodecamp.org/news/how-to-sync-your-fork-with-the-original-git-repository/) with this repository ([how to merge conflicts](https://opensource.com/article/20/4/git-merge-conflict)):
-
-```
-# Add a new remote upstream repository
-git remote add upstream https://github.com/zero-to-mastery/breads-server.git
-
-# Sync your fork
-git fetch upstream
-git checkout master
-git merge upstream/master
-```
-
-2. Push changes to your repo:
-
-`git push origin master`
-
-3. In your repo GitHub page, create a pull request to the `development` branch. This will allow us to see changes in a staging environment before merging to `master`.
-
-4. If everything runs correctly, your pull request will be merged into `master`.
+([For more info](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow))
 
 ## This project uses the Creative Commons Attribution 4.0 International License
 
 When you submit code changes, your submissions are understood to be under the same CC License that covers the project. Feel free to contact the maintainers if that's a concern.
-
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html), So All Code Changes Happen Through Pull Requests
-
-Pull requests are the best way to propose changes to the codebase (we use [Github Flow](https://guides.github.com/introduction/flow/index.html)). We actively welcome your pull requests:
-
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests.
-3. If your change needs an explaination to the user, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
 
 ## Report bugs using Github's [issues](../../issues)
 
