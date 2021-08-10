@@ -17,7 +17,7 @@ class Reading {
   static async create(url, user_id) {
     let options = { args: [url, user_id] };
     let parseReading = await new Promise((resolve, reject) => {
-      PythonShell.run("reading_scraper.py", options, (err, data) => {
+      PythonShell.run("src/reading_scraper.py", options, (err, data) => {
         if (err) {
           // console.log(err)
           reject(err);
