@@ -150,7 +150,7 @@ class Scraper():
         # if domain is 'special' or if title is blank, try cached version
         if (self.reading == '' or self.reading.title == '' 
             or '403 Forbidden' in self.reading.title
-            or self.reading.title == "Bloomberg"): 
+            or "Bloomberg - Are" in self.reading.title): 
             # print('needing to cache')
             cached_url = 'https://webcache.googleusercontent.com/search?q=cache:' + self.url
             try:
@@ -164,7 +164,7 @@ class Scraper():
         if ('Not Found' in self.reading.title 
             or str(self.reading.title).startswith("https:///search?q=cache:")
             or '404' in self.reading.title
-            or self.reading.title == "Bloomberg"
+            or "Bloomberg - Are" in self.reading.title
             or self.reading == ''):
             # print('using link preview')
             r = requests.get(f'http://api.linkpreview.net/?key={link_preview}&q={self.url}')
