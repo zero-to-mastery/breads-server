@@ -28,6 +28,7 @@ class Reading {
     });
     // console.log(parseReading)
     const values = JSON.parse(parseReading[0]);
+    console.log("CREATE", values);
     const insertReading = await new Promise((resolve, reject) => {
       db.connection.query(queries.insertReading, [[values]], (err, results) => {
         if (err) reject(err);
@@ -172,7 +173,7 @@ class Reading {
   static update(url, user_id, reading_id) {
     let options = { args: [url, user_id] };
     let reading = new Promise((resolve, reject) => {
-      PythonShell.run("reading_scraper.py", options, function (err, data) {
+      PythonShell.run("src/reading_scraper.py", options, function (err, data) {
         if (err) reject(err);
         return resolve(data);
       });
