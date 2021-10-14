@@ -1,23 +1,12 @@
-import requests, re, sys, json, os, time
+import requests, re, sys, json, os
 from urllib.parse import unquote
-
-# dependencies for reading scraper
+from random import choice
 from dotenv import load_dotenv
 from fake_useragent import UserAgent, FakeUserAgentError
 from goose3 import Goose
 
-# dependencies for headless browser
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from splinter import Browser
-from random import seed, random, choice
-from collections import Counter
-from string import punctuation
-
 load_dotenv()
-
 link_preview = os.getenv('LINK_PREVIEW_KEY')
-chromedriver_dir = os.getenv("CHROMEDRIVER_DIR")
 
 # Scraper class defined here. Ctrl + F for "Scraper Logic" 
 # to skip the class definition
@@ -236,177 +225,20 @@ class Scraper():
             self.errors.append(sys.exc_info())
         # print(word_count)
 
-    def auto_browser(self):
-        # define the location of the Chrome Driver
-        executable_path = {'executable_path': chromedriver_dir}
-
-        # Create a new instance of the browser. Leave Headless as False, as it seems to help with bot detection
-        options = webdriver.ChromeOptions() 
-        options.add_argument("start-maximized")
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        browser = Browser('chrome', **executable_path, headless=False, incognito=True, options=options, user_agent=self.useragent)
-        # remove some flags for bot detection
-        browser.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-
-        time.sleep(random()+random()*10+1)
-        # go to the URL
-        try:
-            browser.visit(self.url)
-        except:
-            # print("Error occurred visiting url: ", sys.exc_info())
-            self.title = ''
-            self.description = ''
-            self.image = ''
-            self.word_count = 0
-            self.domain = ''
-            return
-        seed(1)
-
-        try:
-            # quit if we find a recaptcha, but add a specific title 
-            # so that we can search the db later and try to find entries
-            # stopped by recaptcha
-            if browser.is_element_present_by_id("rc-anchor-container", wait_time=5):
-                browser.quit()
-                self.reading = ''
-                self.title = ""
-                self.description = "Looks like we had an issue getting that content! We'll try again in a minute or two, though!"
-                self.image = "" # hosted face palm emoji jpg maybe?
-                self.word_count = 0
-                return
-        except:
-            # print("Error occurred looking for captcha: ", sys.exc_info())
-            pass
-        
-        # scroll through page with random intervals to trigger any lazy loading
-        time.sleep(random()+random()*10+2)
-        try:
-            browser.execute_script("var main = document.querySelector('main'); if(main){main.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})};")
-            browser.execute_script("var main = document.querySelector('#main'); if(main){main.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})};")
-            browser.execute_script("var main = document.querySelector('.main'); if(main){main.scrollIntoView({behavior: 'smooth', block: 'center', inline: 'nearest'})};")
-        except:
-            # print("Error occurred triggering lazy loading: ", sys.exc_info())
-            pass
-        
-        time.sleep(random()+random()*10+2)
-
-        try:
-            browser.execute_script("var footer = document.querySelector('footer'); if(footer){footer.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
-            browser.execute_script("var footer = document.querySelector('#footer'); if(footer){footer.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
-            browser.execute_script("var footer = document.querySelector('.footer'); if(footer){footer.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
-        except:
-            # print("Error occurred triggering lazy loading: ", sys.exc_info())
-            pass
-        
-        time.sleep(random()+random()*10+2)
-        try:
-            browser.execute_script("var header = document.querySelector('header'); if(header){header.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
-            browser.execute_script("var header = document.querySelector('#header'); if(header){header.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
-            browser.execute_script("var header = document.querySelector('.header'); if(header){header.scrollIntoView({behavior: 'smooth', block: 'end', inline: 'nearest'})};")
-        except:
-            # print("Error occurred triggering lazy loading: ", sys.exc_info())
-            pass
-        time.sleep(random()+random()*10+2)
-
-        # grab html
-        html = browser.html
-        browser.quit()
-
-        # create soup object out of cleaned html
-        soup = BeautifulSoup(html, "lxml")
-
-        # get title
-        try:
-            title_tag = soup.find("meta", property="og:title")
-            self.title = title_tag['content']
-        except:
-            try:
-                self.title = str(soup.title.string).strip()
-                if self.title and len(self.title) >= 1:
-                    pass
-                else:
-                    self.title = "Unable to get title"
-            except:
-                self.title = "Unable to get title"
-        
-        # get description
-        try:
-            description_tag = soup.find("meta", property="og:description")
-            self.description = description_tag['content']
-            if len(self.description) < 1:
-                description_tag = soup.find("meta", attr={"name":"description"})
-                self.description = description_tag['content']
-            if len(self.description) < 1:
-                description_tag = soup.find("meta", attr={"name":"twitter:description"})
-                self.description = description_tag['content']
-        except:
-            # print("can't find description")
-            # use first 500 words of text instead
-            p_tags = soup.findAll('p')
-            for tag in p_tags:
-                try:
-                    text = tag.getText()
-                except:
-                    text = ""
-                self.description += text + " "
-        if (len(self.description) > 150):
-            self.description = (self.description[:147] + '...')
-
-        # get image
-        try:
-            image_tag = soup.find("meta", property="og:image")
-            self.image = image_tag['content']
-            if not self.image:
-                # print("no og tag for image")
-                try:
-                    image_tag = soup.find("img").get('src')
-                    self.image = image_tag
-                except:
-                    self.image = ''
-        except:
-            self.image = '' # might think about a generic image so it's not blank
-
-        # Word Count
-        # Get the words within paragrphs
-        text_p = (''.join(s.findAll(text=True))for s in soup.findAll('p'))
-        c_p = Counter((x.rstrip(punctuation).lower() for y in text_p for x in y.split()))
-
-        # Sum all the values of the counter
-        total = list(c_p.values())
-        for num in total:
-            self.word_count += num
-
 # Scraper Logic
-
 BASE_URL = sys.argv[1]
 base_scrape = Scraper.transform_url(BASE_URL)
 if isinstance(base_scrape, list):
     values = ["Invalid URL.", "", "", "", 0, BASE_URL]
     print(json.dumps(values))
     sys.exit()
-check = base_scrape.check_if_pdf()
-if check:
-    # send to pdf scraper, which should return the values array,
-    # so we end the script here.
-    sys.exit()
+
 base_scrape.useragent_generator()
 base_scrape.build_headers()
 base_scrape.get_domain()
 base_scrape.get_reading_data()
 base_scrape.get_title()
 base_scrape.get_word_count()
-
-if ('Unable to get title of article' in base_scrape.title
-    or 'Bloomberg - Are you a robot?' in base_scrape.title
-    or "Access Denied" in base_scrape.title
-    or "Error" in base_scrape.title
-    or "ERROR" in base_scrape.title
-    or base_scrape.title.startswith("https:///search?q=cache:")):
-        # wait a minute, since we just did a few calls to the site and they failed.
-        # Doing that to avoid bot detection
-        time.sleep(60)
-        base_scrape.auto_browser()
 
 values = [
     base_scrape.title, 
